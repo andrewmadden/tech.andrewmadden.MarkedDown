@@ -7,13 +7,23 @@
 //
 
 import UIKit
+import WebKit
 
 class PreviewViewController: UIViewController {
-
+    @IBOutlet weak var webPreview: WKWebView!
+    
+    // test html
+    let html = """
+        <html>
+        <body>
+        <h1>Hello World</h1>
+        </body>
+        </html>
+    """
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        webPreview.loadHTMLString(html, baseURL: nil)
     }
     
 

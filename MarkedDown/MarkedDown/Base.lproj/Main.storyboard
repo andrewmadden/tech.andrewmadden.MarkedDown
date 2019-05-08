@@ -18,25 +18,32 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Preview" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lyI-Zs-CD4">
-                                <rect key="frame" x="171" y="441" width="61" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o2U-nK-KUd">
+                                <rect key="frame" x="0.0" y="44" width="414" height="769"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="lyI-Zs-CD4" firstAttribute="top" secondItem="7oD-64-6Uj" secondAttribute="top" constant="397" id="5zK-tr-rnO"/>
-                            <constraint firstItem="lyI-Zs-CD4" firstAttribute="leading" secondItem="7oD-64-6Uj" secondAttribute="leading" constant="171" id="Bsf-sI-vXk"/>
+                            <constraint firstItem="o2U-nK-KUd" firstAttribute="bottom" secondItem="7oD-64-6Uj" secondAttribute="bottom" id="Ayk-My-ykb"/>
+                            <constraint firstItem="o2U-nK-KUd" firstAttribute="leading" secondItem="7oD-64-6Uj" secondAttribute="leading" id="Lle-bt-cVr"/>
+                            <constraint firstItem="o2U-nK-KUd" firstAttribute="trailing" secondItem="7oD-64-6Uj" secondAttribute="trailing" id="aan-l9-icR"/>
+                            <constraint firstItem="o2U-nK-KUd" firstAttribute="top" secondItem="7oD-64-6Uj" secondAttribute="top" id="r6e-f8-bnf"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7oD-64-6Uj"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Preview" image="PreviewImage" id="gza-IX-vwd"/>
+                    <connections>
+                        <outlet property="webPreview" destination="o2U-nK-KUd" id="lHV-n7-2gp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GCs-Oa-3kM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1286" y="418"/>
+            <point key="canvasLocation" x="1285.5072463768117" y="417.85714285714283"/>
         </scene>
         <!--Editor-->
         <scene sceneID="Gfw-yY-6Yr">
