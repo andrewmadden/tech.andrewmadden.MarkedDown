@@ -41,15 +41,14 @@
         <!--Editor-->
         <scene sceneID="Gfw-yY-6Yr">
             <objects>
-                <viewController title="Editor" id="BVc-id-Eqg" customClass="EditorViewController" sceneMemberID="viewController">
+                <viewController title="Editor" id="BVc-id-Eqg" customClass="EditorViewController" customModule="MarkedDown" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hSK-yB-Iut">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bUi-qt-5YH">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="# Test Editor" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="bUi-qt-5YH">
                                 <rect key="frame" x="15" y="44" width="384" height="769"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -64,6 +63,9 @@
                         <viewLayoutGuide key="safeArea" id="X4a-ch-Nzy"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Editor" image="EditorImage" id="5bd-lx-rOp"/>
+                    <connections>
+                        <outlet property="editorTextView" destination="bUi-qt-5YH" id="fMe-Yl-d2Y"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NRw-Pn-l5h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

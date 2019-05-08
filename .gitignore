@@ -2,6 +2,6 @@
 MarkedDown/Pods/*
 
 # xcode user files
-*.xuserstate
+MarkedDown/MarkedDown.xcodeproj/xcuserdata/*
 
 .DS_Store

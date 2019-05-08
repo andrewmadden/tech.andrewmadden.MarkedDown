@@ -10,13 +10,13 @@
 		2678EDF93679F8DCB205B967 /* Pods_MarkedDownUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 252F2D5131639783D25040B6 /* Pods_MarkedDownUITests.framework */; };
 		39925F9C4EB825A562F3348C /* Pods_MarkedDownTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA29B79F1209D30237EDD82 /* Pods_MarkedDownTests.framework */; };
 		492D5A342282E5E6002D8AEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A332282E5E6002D8AEB /* AppDelegate.swift */; };
-		492D5A362282E5E6002D8AEB /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A352282E5E6002D8AEB /* EditorViewController.swift */; };
 		492D5A392282E5E6002D8AEB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 492D5A372282E5E6002D8AEB /* Main.storyboard */; };
 		492D5A3B2282E5E7002D8AEB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 492D5A3A2282E5E7002D8AEB /* Assets.xcassets */; };
 		492D5A3E2282E5E7002D8AEB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 492D5A3C2282E5E7002D8AEB /* LaunchScreen.storyboard */; };
 		492D5A492282E5E7002D8AEB /* MarkedDownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A482282E5E7002D8AEB /* MarkedDownTests.swift */; };
 		492D5A542282E5E7002D8AEB /* MarkedDownUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A532282E5E7002D8AEB /* MarkedDownUITests.swift */; };
 		492D5A622282E739002D8AEB /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A612282E739002D8AEB /* PreviewViewController.swift */; };
+		492D5A66228313B9002D8AEB /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A65228313B9002D8AEB /* EditorViewController.swift */; };
 		71744AC3F4FDE64A0F506BED /* Pods_MarkedDown.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C43E9D9F982E92319DAEEE8 /* Pods_MarkedDown.framework */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,6 @@
 		252F2D5131639783D25040B6 /* Pods_MarkedDownUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MarkedDownUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		492D5A302282E5E6002D8AEB /* MarkedDown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarkedDown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		492D5A332282E5E6002D8AEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		492D5A352282E5E6002D8AEB /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		492D5A382282E5E6002D8AEB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		492D5A3A2282E5E7002D8AEB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		492D5A3D2282E5E7002D8AEB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -54,6 +53,7 @@
 		492D5A532282E5E7002D8AEB /* MarkedDownUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkedDownUITests.swift; sourceTree = "<group>"; };
 		492D5A552282E5E7002D8AEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		492D5A612282E739002D8AEB /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
+		492D5A65228313B9002D8AEB /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		4A2BEA6E2348ACDDD1E702FF /* Pods-MarkedDown.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDown.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDown/Pods-MarkedDown.debug.xcconfig"; sourceTree = "<group>"; };
 		5BF07A94D418F5FC9217A5C9 /* Pods-MarkedDownTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDownTests.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDownTests/Pods-MarkedDownTests.debug.xcconfig"; sourceTree = "<group>"; };
 		89276CA00526479865E0C7FB /* Pods-MarkedDown.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDown.release.xcconfig"; path = "Target Support Files/Pods-MarkedDown/Pods-MarkedDown.release.xcconfig"; sourceTree = "<group>"; };
@@ -148,8 +148,8 @@
 		492D5A632282E748002D8AEB /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				492D5A352282E5E6002D8AEB /* EditorViewController.swift */,
 				492D5A612282E739002D8AEB /* PreviewViewController.swift */,
+				492D5A65228313B9002D8AEB /* EditorViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -171,7 +171,6 @@
 				DB0B40EEC814B300697EEC09 /* Pods-MarkedDownUITests.debug.xcconfig */,
 				E6F5DDE1A887FBB09A4E0B4A /* Pods-MarkedDownUITests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -413,9 +412,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				492D5A362282E5E6002D8AEB /* EditorViewController.swift in Sources */,
 				492D5A342282E5E6002D8AEB /* AppDelegate.swift in Sources */,
 				492D5A622282E739002D8AEB /* PreviewViewController.swift in Sources */,
+				492D5A66228313B9002D8AEB /* EditorViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
