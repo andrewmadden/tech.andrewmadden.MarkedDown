@@ -1,0 +1,7 @@
+# cocoapod dependencies
+MarkedDown/Pods/*
+
+# xcode user files
+*.xuserstate
+
+.DS_Store

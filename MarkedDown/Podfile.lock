@@ -1,0 +1,20 @@
+PODS:
+  - Down (0.8.1)
+  - Marklight (1.4.0)
+
+DEPENDENCIES:
+  - Down
+  - Marklight
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Down
+    - Marklight
+
+SPEC CHECKSUMS:
+  Down: 3aa5ab1aee1a2ffff3c07291e9210dac5cc462cd
+  Marklight: 2489d376cd3d3e7b1d109cd7d6d248fd9b8e0bee
+
+PODFILE CHECKSUM: d6f6f88f59f6f857e5a855da1c8e46dd49759f76
+
+COCOAPODS: 1.6.1
