@@ -24,8 +24,9 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        print(editorTextView.text)
-        NotificationCenter.default.post(Notification(name: Notification.Name("ContentsChanged"), object: nil, userInfo: ["newContents": textView.text]))
+        if let text: String =  textView.layoutManager.textStorage?.string {
+                  NotificationCenter.default.post(Notification(name: Notification.Name("ContentsChanged"), object: nil, userInfo: ["newContents": text]))
+        }
     }
     
 
