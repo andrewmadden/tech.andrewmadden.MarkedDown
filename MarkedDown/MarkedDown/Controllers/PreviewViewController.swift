@@ -8,12 +8,13 @@
 
 import UIKit
 import WebKit
+import Down
 
 class PreviewViewController: UIViewController {
     @IBOutlet weak var webPreview: WKWebView!
     
     // test html
-    let html = """
+    var html = """
         <html>
         <body>
         <h1>Hello World</h1>
@@ -23,7 +24,20 @@ class PreviewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webPreview.loadHTMLString(html, baseURL: nil)
+        // update web view with new content from file
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("FileContentsUpdated"), object: nil, queue: nil) { (notification) in
+            if let userInfo = notification.userInfo {
+                if let contents = userInfo["contents"] as? String {
+                    self.html = try! Down(markdownString: contents).toHTML()
+                    self.loadHTML()
+                }
+            }
+        }
+        self.loadHTML()
+    }
+    
+    private func loadHTML() {
+        webPreview.loadHTMLString(self.html, baseURL: nil)
     }
     
 

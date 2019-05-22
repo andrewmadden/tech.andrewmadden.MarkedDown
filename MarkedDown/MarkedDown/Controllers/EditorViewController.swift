@@ -23,9 +23,10 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         textStorage.addLayoutManager(editorTextView.layoutManager)
     }
     
+    // publishes notification with contents when editor changes
     func textViewDidChange(_ textView: UITextView) {
         if let text: String =  textView.layoutManager.textStorage?.string {
-                  NotificationCenter.default.post(Notification(name: Notification.Name("ContentsChanged"), object: nil, userInfo: ["newContents": text]))
+                  NotificationCenter.default.post(Notification(name: Notification.Name("EditorContentsUpdated"), object: nil, userInfo: ["newContents": text]))
         }
     }
     
