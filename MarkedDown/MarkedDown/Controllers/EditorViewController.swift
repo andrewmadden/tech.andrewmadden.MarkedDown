@@ -9,15 +9,23 @@
 import UIKit
 import Marklight
 
-class EditorViewController: UIViewController {
+class EditorViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var editorTextView: UITextView!
     
     let textStorage = MarklightTextStorage()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        editorTextView.delegate = self
+        
         // Add markdown syntax highlighting to text view
         textStorage.addLayoutManager(editorTextView.layoutManager)
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        print(editorTextView.text)
+        NotificationCenter.default.post(Notification(name: Notification.Name("ContentsChanged"), object: nil, userInfo: ["newContents": textView.text]))
     }
     
 
