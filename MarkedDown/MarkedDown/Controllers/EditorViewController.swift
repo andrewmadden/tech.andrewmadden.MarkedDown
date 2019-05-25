@@ -32,6 +32,10 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         
         // set title with filename
         self.navigationItem.title = fileEditing?.fileName
+        
+        // get notified when the keyboard appears and disappears
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     }
     
     // publishes notification with contents when editor changes
@@ -50,15 +54,23 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     }
 
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // resize textview when keyboard is shown and hidden.
+    // code from https://www.hackingwithswift.com/example-code/uikit/how-to-adjust-a-uiscrollview-to-fit-the-keyboard
+    @objc func adjustForKeyboard(notification: Notification) {
+        guard let keyboardValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        
+        let keyboardScreenEndFrame = keyboardValue.cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if notification.name == UIResponder.keyboardWillHideNotification {
+            editorTextView.contentInset = .zero
+        } else {
+            editorTextView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
+        }
+        
+        editorTextView.scrollIndicatorInsets = editorTextView.contentInset
+        
+        let selectedRange = editorTextView.selectedRange
+        editorTextView.scrollRangeToVisible(selectedRange)
     }
-    */
-
 }

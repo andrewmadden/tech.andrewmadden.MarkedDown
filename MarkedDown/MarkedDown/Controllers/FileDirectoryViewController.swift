@@ -27,9 +27,9 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidAppear(_ animated: Bool) {
         // add 'add file' icon in nav bar
-        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(newFile))
         
+        // refresh list
         getFilesFromDocumentsDirectory()
     }
     
@@ -62,11 +62,15 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         self.present(alert, animated: true, completion: nil)
     }
     
-    // create new file in Documents directory
-    func createNewMarkDownFile(_ fileName: String) {
-        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileName + ".md"
+    // create new file in Documents directory and open editor if successful
+    func createNewMarkDownFile(_ fileKey: String) {
+        let fileName = fileKey + ".md"
+        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileName
         let isFileCreated = fm.createFile(atPath: filePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
-        getFilesFromDocumentsDirectory()
+        if (isFileCreated) {
+            self.fileEditing = MarkdownFile(fileName: fileName)
+            performSegue(withIdentifier: "openFileSegue", sender: nil)
+        }
     }
     
     func getFilesFromDocumentsDirectory() {
