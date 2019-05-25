@@ -23,12 +23,12 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         // load content from file model
         if let contents: String =  self.fileEditing?.contents {
             let attributedString = NSAttributedString(string: contents)
-            self.editorTextView.attributedText = attributedString
-//            self.editorTextView.textStorage.append(attributedString)
+//            self.editorTextView.attributedText = attributedString
+            self.textStorage.setAttributedString(attributedString)
         }
         
         // Add markdown syntax highlighting to text view
-//        textStorage.addLayoutManager(editorTextView.layoutManager)
+        textStorage.addLayoutManager(editorTextView.layoutManager)
         
         // set title with filename
         self.navigationItem.title = fileEditing?.fileName
