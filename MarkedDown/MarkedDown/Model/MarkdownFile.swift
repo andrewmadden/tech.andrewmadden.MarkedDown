@@ -10,42 +10,35 @@ import Foundation
 //import Down
 
 class MarkdownFile {
-    let fileName: String
+    var fileName: String
+    var filePath: URL
     var contents: String?
-//    var markdown: Down?
+    var fm = FileManager.default
     
-    init(fileName: String, contents: String? = nil) {
+    init(fileName: String) {
         self.fileName = fileName
-        if let contents: String = contents { updateContents(text: contents) }
-//        self.prepareMarkdown()
+        self.filePath = fm.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+        self.getContentsFromFile()
         
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("EditorContentsUpdated"), object: nil, queue: nil) { (notification) in
-            if let userInfo = notification.userInfo {
-                if let newContents = userInfo["newContents"] as? String {
-                    self.updateContents(text: newContents)
-                }
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("EditorDidEndEditing"), object: nil, queue: nil) { (notification) in
+            // update file
+            do {
+                try self.contents?.write(to: self.filePath, atomically: true, encoding: String.Encoding.utf8) // TODO what kind of encoding to use?
+                print("saved file")
+            } catch {
+                // TODO: tell user failed to write to disk
+                print("failed to save file")
             }
         }
     }
     
-    // create a markdown object from file contents
-//    private func prepareMarkdown() {
-//        if let contents = self.contents {
-//            markdown = Down(markdownString: contents)
-//        }
-//    }
-    
-    // builds a html string from the markdown object
-//    var html: String? {
-//        if let markdown = self.markdown {
-//            return try? markdown.toHTML()
-//        } else {
-//            return nil
-//        }
-//    }
-    
-    private func updateContents(text: String) {
-        self.contents = text
-        NotificationCenter.default.post(name: NSNotification.Name("FileContentsUpdated"), object: nil, userInfo: ["contents" : self.contents ?? ""])
+    private func getContentsFromFile() {
+        do {
+            self.contents = try String(contentsOfFile: self.filePath.relativePath)
+            print("Loaded content from file: " + self.fileName)
+        } catch {
+            print("Could not load content from file: " + self.fileName)
+        }
     }
+    
 }

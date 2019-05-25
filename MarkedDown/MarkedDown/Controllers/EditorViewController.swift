@@ -13,22 +13,42 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var editorTextView: UITextView!
     
     let textStorage = MarklightTextStorage()
+    var fileEditing: MarkdownFile? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         editorTextView.delegate = self
         
+        // load content from file model
+        if let contents: String =  self.fileEditing?.contents {
+            let attributedString = NSAttributedString(string: contents)
+            self.editorTextView.attributedText = attributedString
+//            self.editorTextView.textStorage.append(attributedString)
+        }
+        
         // Add markdown syntax highlighting to text view
-        textStorage.addLayoutManager(editorTextView.layoutManager)
+//        textStorage.addLayoutManager(editorTextView.layoutManager)
+        
+        // set title with filename
+        self.navigationItem.title = fileEditing?.fileName
     }
     
     // publishes notification with contents when editor changes
     func textViewDidChange(_ textView: UITextView) {
         if let text: String =  textView.layoutManager.textStorage?.string {
-                  NotificationCenter.default.post(Notification(name: Notification.Name("EditorContentsUpdated"), object: nil, userInfo: ["newContents": text]))
+            fileEditing?.contents = text
+            NotificationCenter.default.post(Notification(name: Notification.Name("EditorContentsUpdated"), object: nil))
         }
     }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if let text: String =  textView.layoutManager.textStorage?.string {
+            fileEditing?.contents = text
+            NotificationCenter.default.post(Notification(name: Notification.Name("EditorDidEndEditing"), object: nil))
+        }
+    }
+
     
 
     /*

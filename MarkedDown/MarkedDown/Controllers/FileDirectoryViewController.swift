@@ -8,13 +8,20 @@
 
 import UIKit
 
-class FileDirectoryViewController: UIViewController {
-
+class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+  
     let fm = FileManager.default
-    let path = Bundle.main.resourcePath!
+    var files: [String] = []
+    var fileEditing: MarkdownFile?
+    
+    @IBOutlet weak var filesTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // setup tableview datasource and delegate
+        self.filesTableView.dataSource = self
+        self.filesTableView.delegate = self
 
     }
     
@@ -22,6 +29,8 @@ class FileDirectoryViewController: UIViewController {
         // add 'add file' icon in nav bar
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(newFile))
+        
+        getFilesFromDocumentsDirectory()
     }
     
     @objc func newFile() {
@@ -38,6 +47,7 @@ class FileDirectoryViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
             if let newFileName: String = alert?.textFields![0].text {
                 // create file and trigger segue to editor
+                self.createNewMarkDownFile(newFileName)
                 print(newFileName)
             } else {
                 // throw error that file could not be created
@@ -52,9 +62,20 @@ class FileDirectoryViewController: UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
+    // create new file in Documents directory
+    func createNewMarkDownFile(_ fileName: String) {
+        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileName + ".md"
+        let isFileCreated = fm.createFile(atPath: filePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
+        getFilesFromDocumentsDirectory()
+    }
+    
     func getFilesFromDocumentsDirectory() {
-        let files = try? fm.contentsOfDirectory(atPath: getDocumentsDirectory().absoluteString)
-        files?.forEach { print($0) }
+        if let latestFiles: [String] = try? fm.contentsOfDirectory(atPath: getDocumentsDirectory().relativePath) {
+            self.files = latestFiles
+        }
+        
+        // refresh table view
+        filesTableView.reloadData()
     }
     
     func getDocumentsDirectory() -> URL {
@@ -62,15 +83,36 @@ class FileDirectoryViewController: UIViewController {
         let documentsDirectory = paths[0]
         return documentsDirectory
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return files.count
     }
-    */
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "fileCell", for: indexPath)
+        cell.textLabel?.text = files[indexPath.row]
+        return cell
+    }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // set up model with selected file name
+        let selectedFileName: String = self.files[indexPath.row]
+        self.fileEditing = MarkdownFile(fileName: selectedFileName)
+        
+        performSegue(withIdentifier: "openFileSegue", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let tabViewController = segue.destination as? UITabBarController {
+            // set the file model in the editor and preview views
+            if let viewController = tabViewController.viewControllers?[0] as? EditorViewController {
+                viewController.fileEditing = self.fileEditing
+            }
+            if let viewController = tabViewController.viewControllers?[1] as? PreviewViewController {
+                viewController.fileEditing = self.fileEditing
+                viewController.setEditorObserver()
+            }
+        }
+    }
+ 
 }

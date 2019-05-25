@@ -13,31 +13,31 @@ import Down
 class PreviewViewController: UIViewController {
     @IBOutlet weak var webPreview: WKWebView!
     
-    // test html
-    var html = """
-        <html>
-        <body>
-        <h1>Hello World</h1>
-        </body>
-        </html>
-    """
+    var html = ""
+    var fileEditing: MarkdownFile? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // update web view with new content from file
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("FileContentsUpdated"), object: nil, queue: nil) { (notification) in
-            if let userInfo = notification.userInfo {
-                if let contents = userInfo["contents"] as? String {
-                    self.html = try! Down(markdownString: contents).toHTML()
-                    self.loadHTML()
-                }
-            }
-        }
-        self.loadHTML()
+        
+        // set title with filename
+        self.navigationItem.title = fileEditing?.fileName
+        
+        // initialize view
+        self.loadHTML(from: self.fileEditing?.contents)
     }
     
-    private func loadHTML() {
-        webPreview.loadHTMLString(self.html, baseURL: nil)
+    private func loadHTML(from contents: String?) {
+        if let contents = contents {
+            self.html = try! Down(markdownString: contents).toHTML()
+            self.webPreview?.loadHTMLString(self.html, baseURL: nil)
+        }
+    }
+    
+    // update web view with new content from file
+    func setEditorObserver() {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("EditorContentsUpdated"), object: nil, queue: nil) { (notification) in
+            self.loadHTML(from: self.fileEditing?.contents)
+        }
     }
     
 
