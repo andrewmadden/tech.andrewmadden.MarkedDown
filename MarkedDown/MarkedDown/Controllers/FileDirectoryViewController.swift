@@ -8,11 +8,20 @@
 
 import UIKit
 
+enum ErrorMessage: String {
+    case empty = "File name cannot be empty"
+    case exists = "File already exists"
+}
+
 class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
   
     let fm = FileManager.default
     var files: [String] = []
     var fileEditing: MarkdownFile?
+    
+    // new file alert
+    var alert: UIAlertController?
+    var errorLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 50))
     
     @IBOutlet weak var filesTableView: UITableView!
     
@@ -22,7 +31,9 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         // setup tableview datasource and delegate
         self.filesTableView.dataSource = self
         self.filesTableView.delegate = self
-
+        
+        // setup error label for create file alert popup
+        setupErrorLabel()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -33,18 +44,28 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         getFilesFromDocumentsDirectory()
     }
     
+    private func setupErrorLabel() {
+        errorLabel.text = "Error"
+        errorLabel.textColor = .red
+        errorLabel.isHidden = true
+        errorLabel.font = errorLabel.font.withSize(12)
+    }
+    
     @objc func newFile() {
         print("new file selected")
         // dialog to get new filename
-        let alert = UIAlertController(title: "New File", message: "Enter a file name", preferredStyle: .alert)
+        alert = UIAlertController(title: "New File", message: "Enter a file name", preferredStyle: .alert)
         
         // add text field for new file name
-        alert.addTextField { (textField: UITextField) in
-                textField.placeholder = "newFile"
+        alert!.addTextField { (textField: UITextField) in
+            // add validate input listener
+            textField.addTarget(self, action: #selector(self.newFileTextFieldDidChange(_:)), for: .editingChanged)
+            textField.addTarget(self, action: #selector(self.newFileTextFieldDidChange(_:)), for: .editingDidBegin)
+            textField.addSubview(self.errorLabel)
         }
         
         // add action to create button
-        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
+        alert!.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] (_) in
             if let newFileName: String = alert?.textFields![0].text {
                 // create file and trigger segue to editor
                 self.createNewMarkDownFile(newFileName)
@@ -55,15 +76,33 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         }))
         
         // add action to close dialog without doing anything to cancel button
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert!.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
-        self.present(alert, animated: true, completion: nil)
+        self.present(alert!, animated: true, completion: nil)
+    }
+    
+    @objc func newFileTextFieldDidChange(_ textField: UITextField) {
+        // reset
+        errorLabel.isHidden = true
+        if let alert = self.alert { alert.actions[0].isEnabled = true }
+        
+        // check for validation
+        // if not valid, disable create button and show error message
+        if textField.text!.isEmpty {
+            errorLabel.isHidden = false
+            errorLabel.text = ErrorMessage.empty.rawValue
+            if let alert = self.alert { alert.actions[0].isEnabled = false }
+        } else if files.contains(textField.text!) {
+            errorLabel.isHidden = false
+            errorLabel.text = ErrorMessage.exists.rawValue
+            if let alert = self.alert { alert.actions[0].isEnabled = false }
+        }
     }
     
     // create new file in Documents directory and open editor if successful
     func createNewMarkDownFile(_ fileKey: String) {
         let fileName = fileKey + ".md"
-        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileName
+        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileKey
         let isFileCreated = fm.createFile(atPath: filePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
         if (isFileCreated) {
             self.fileEditing = MarkdownFile(fileName: fileName)
