@@ -3,5 +3,6 @@ MarkedDown/Pods/*
 
 # xcode user files
 MarkedDown/MarkedDown.xcodeproj/xcuserdata/*
+MarkedDown/MarkedDown.xcworkspace/xcuserdata/*
 
 .DS_Store
