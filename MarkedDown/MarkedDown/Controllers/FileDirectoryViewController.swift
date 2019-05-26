@@ -92,7 +92,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
             errorLabel.isHidden = false
             errorLabel.text = ErrorMessage.empty.rawValue
             if let alert = self.alert { alert.actions[0].isEnabled = false }
-        } else if files.contains(textField.text!) {
+        } else if files.contains(textField.text! + ".md") {
             errorLabel.isHidden = false
             errorLabel.text = ErrorMessage.exists.rawValue
             if let alert = self.alert { alert.actions[0].isEnabled = false }
@@ -101,11 +101,10 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     
     // create new file in Documents directory and open editor if successful
     func createNewMarkDownFile(_ fileKey: String) {
-        let fileName = fileKey + ".md"
-        let filePath: String = getDocumentsDirectory().relativePath + "/" + fileKey
-        let isFileCreated = fm.createFile(atPath: filePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
+        let filePath = getDocumentsDirectory().appendingPathComponent(fileKey).appendingPathExtension("md")
+        let isFileCreated = fm.createFile(atPath: filePath.relativePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
         if (isFileCreated) {
-            self.fileEditing = MarkdownFile(fileName: fileName)
+            self.fileEditing = MarkdownFile(fileName: fileKey + ".md")
             performSegue(withIdentifier: "openFileSegue", sender: nil)
         }
     }
@@ -113,6 +112,11 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     func getFilesFromDocumentsDirectory() {
         if let latestFiles: [String] = try? fm.contentsOfDirectory(atPath: getDocumentsDirectory().relativePath) {
             self.files = latestFiles
+            // filter and show only .md files
+            // TODO extend for other markdown mime types
+            self.files = self.files.filter { (fileName) in
+                return fileName.suffix(3) == ".md"
+            }
         }
         
         // refresh table view
@@ -131,7 +135,8 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "fileCell", for: indexPath)
-        cell.textLabel?.text = files[indexPath.row]
+        // strip .md from filename
+        cell.textLabel?.text = String(files[indexPath.row].prefix(files[indexPath.row].count - 3))
         return cell
     }
 
