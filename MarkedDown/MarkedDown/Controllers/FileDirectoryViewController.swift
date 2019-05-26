@@ -106,6 +106,21 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         performSegue(withIdentifier: "openFileSegue", sender: nil)
     }
     
+    // delete file by swiping row
+    // TODO implement an alert to confirm deletion
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            if deleteFile(files[indexPath.row]) {
+                files.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                // refresh local data
+                tableView.reloadData()
+            } else {
+                // TODO tell user delete failed
+            }
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let tabViewController = segue.destination as? UITabBarController {
             // set the file model in the editor and preview views
@@ -116,6 +131,16 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
                 viewController.fileEditing = self.fileEditing
                 viewController.setEditorObserver()
             }
+        }
+    }
+    
+    func deleteFile(_ fileName: String) -> Bool {
+        let path = getDocumentsDirectory().appendingPathComponent(fileName)
+        do {
+            try fm.removeItem(at: path)
+            return true
+        } catch {
+            return false
         }
     }
  
