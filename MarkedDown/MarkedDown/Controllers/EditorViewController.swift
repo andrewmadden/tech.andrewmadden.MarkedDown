@@ -9,8 +9,16 @@
 import UIKit
 import Marklight
 
+enum CursorPosition {
+    case start
+    case middle
+    case end
+}
+
 class EditorViewController: UIViewController, UITextViewDelegate {
+    // main text view
     @IBOutlet weak var editorTextView: UITextView!
+
     
     let textStorage = MarklightTextStorage()
     var fileEditing: MarkdownFile? = nil
@@ -36,6 +44,91 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         // get notified when the keyboard appears and disappears
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        
+        // attach toolbar to keyboard when textview is editing
+        setupToolbar()
+    }
+    
+    private func setupToolbar() {
+        let toolbar = UIToolbar()
+        
+        // setup buttons
+        let H1 = UIBarButtonItem(title: "H1", style: .plain, target: self, action: #selector(inputH1))
+        let H2 = UIBarButtonItem(title: "H2", style: .plain, target: self, action: #selector(inputH2))
+        let H3 = UIBarButtonItem(title: "H3", style: .plain, target: self, action: #selector(inputH3))
+        let bold = UIBarButtonItem(image: #imageLiteral(resourceName: "BoldImage"), style: .plain, target: self, action: #selector(inputBold))
+        let italic = UIBarButtonItem(image: #imageLiteral(resourceName: "ItalicImage"), style: .plain, target: self, action: #selector(inputItalic))
+        let code = UIBarButtonItem(image: #imageLiteral(resourceName: "CodeImage"), style: .plain, target: self, action: #selector(inputCodeBlock))
+        let quote = UIBarButtonItem(image: #imageLiteral(resourceName: "QuoteImage"), style: .plain, target: self, action: #selector(inputBlockQuote))
+        let separator = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLineSeparator))
+        
+        // add buttons to toolbar
+        toolbar.items = [H1, H2, H3, bold, italic, code, quote, separator]
+        toolbar.sizeToFit()
+        
+        // add the toolbar to the keyboard
+        editorTextView.inputAccessoryView = toolbar
+    }
+    
+    // toolbar button functions
+    @objc private func inputH1() {
+        let syntax: String = "\n# "
+        // get cursor position
+        let selectedRange = editorTextView.selectedRange
+        // add syntax
+        self.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+        // move cursor
+        let newPosition = NSRange(location: selectedRange.lowerBound + syntax.count, length: 0)
+        editorTextView.selectedRange = newPosition
+        
+    }
+    
+    @objc private func inputH2() {
+        insertSyntax("\n## ", setCursorTo: .end)
+    }
+    
+    @objc private func inputH3() {
+        insertSyntax("\n### ", setCursorTo: .end)
+    }
+    
+    @objc private func inputBold() {
+        insertSyntax("****", setCursorTo: .middle)
+    }
+    
+    @objc private func inputItalic() {
+        insertSyntax("**", setCursorTo: .middle)
+    }
+    
+    @objc private func inputCodeBlock() {
+        insertSyntax("\n```\n\n``` ", setCursorTo: .middle)
+    }
+    
+    @objc private func inputBlockQuote() {
+        insertSyntax("\n> ", setCursorTo: .end)
+    }
+    
+    @objc private func inputLineSeparator() {
+        insertSyntax("\n***\n", setCursorTo: .end)
+    }
+    
+    private func insertSyntax(_ syntax: String, setCursorTo cursorPosition: CursorPosition) {
+        // get cursor position
+        let selectedRange = editorTextView.selectedRange
+        // add syntax
+        self.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+        // set cursor
+        var newPosition: NSRange?
+        switch (cursorPosition) {
+            case .end: newPosition = NSRange(location: selectedRange.lowerBound + syntax.count, length: 0)
+            break
+            case .middle: newPosition = NSRange(location: selectedRange.lowerBound + (syntax.count / 2), length: 0)
+            break
+            default: newPosition = selectedRange
+            break
+        }
+        if let newPosition: NSRange = newPosition {
+            editorTextView.selectedRange = newPosition
+        }
     }
     
     // publishes notification with contents when editor changes
@@ -52,8 +145,7 @@ class EditorViewController: UIViewController, UITextViewDelegate {
             NotificationCenter.default.post(Notification(name: Notification.Name("EditorDidEndEditing"), object: nil))
         }
     }
-
-    
+       
     // resize textview when keyboard is shown and hidden.
     // code from https://www.hackingwithswift.com/example-code/uikit/how-to-adjust-a-uiscrollview-to-fit-the-keyboard
     @objc func adjustForKeyboard(notification: Notification) {

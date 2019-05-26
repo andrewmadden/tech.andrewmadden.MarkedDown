@@ -24,12 +24,16 @@ class PreviewViewController: UIViewController {
         
         // initialize view
         self.loadHTML(from: self.fileEditing?.contents)
+        
     }
     
     private func loadHTML(from contents: String?) {
         if let contents = contents {
+            // create HTML from file contents
             self.html = try! Down(markdownString: contents).toHTML()
-            self.webPreview?.loadHTMLString(self.html, baseURL: nil)
+            // boilerplate for webpage
+            let webpageHTML: String = Webpage().boilerplate(self.html)
+            self.webPreview?.loadHTMLString(webpageHTML, baseURL: nil)
         }
     }
     
