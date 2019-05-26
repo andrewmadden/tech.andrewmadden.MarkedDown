@@ -55,9 +55,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         }))
         
         // add action to close dialog without doing anything to cancel button
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { [weak alert] (_) in
-            print("Create File was cancelled")
-        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }
@@ -107,17 +105,25 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     // delete file by swiping row
-    // TODO implement an alert to confirm deletion
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            if deleteFile(files[indexPath.row]) {
-                files.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .fade)
-                // refresh local data
-                tableView.reloadData()
-            } else {
-                // TODO tell user delete failed
-            }
+            // alert to confirm delete file request
+            let alert = UIAlertController(title: "Delete File", message: "Are you sure you want to delete '" + files[indexPath.row] + "'?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
+                if self.deleteFile(self.files[indexPath.row]) {
+                    self.files.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    // refresh local data
+                    tableView.reloadData()
+                } else {
+                    // tell user delete failed
+                    let alert = UIAlertController(title: "Error", message: "Could not delete file", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
         }
     }
     
