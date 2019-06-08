@@ -19,7 +19,8 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     // main text view
     @IBOutlet weak var editorTextView: UITextView!
 
-    
+    // DEBUG user default text storage
+//    let textStorage = NSTextStorage()
     let textStorage = MarklightTextStorage()
     var fileEditing: MarkdownFile? = nil
 
@@ -31,9 +32,9 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         // load content from file model
         if let contents: String =  self.fileEditing?.contents {
             let attributedString = NSAttributedString(string: contents)
-//            self.editorTextView.attributedText = attributedString
             self.textStorage.setAttributedString(attributedString)
         }
+        
         
         // Add markdown syntax highlighting to text view
         textStorage.addLayoutManager(editorTextView.layoutManager)
@@ -72,15 +73,7 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     
     // toolbar button functions
     @objc private func inputH1() {
-        let syntax: String = "\n# "
-        // get cursor position
-        let selectedRange = editorTextView.selectedRange
-        // add syntax
-        self.textStorage.replaceCharacters(in: selectedRange, with: syntax)
-        // move cursor
-        let newPosition = NSRange(location: selectedRange.lowerBound + syntax.count, length: 0)
-        editorTextView.selectedRange = newPosition
-        
+        insertSyntax("\n# ", setCursorTo: .end)
     }
     
     @objc private func inputH2() {
