@@ -20,9 +20,6 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     // main text view
     @IBOutlet weak var editorTextView: UITextView!
 
-    // DEBUG user default text storage
-//    let textStorage = NSTextStorage()
-//    let textStorage = MarklightTextStorage()
     var fileEditing: MarkdownFile? = nil
     let highlightr = Highlightr()!
 
@@ -35,19 +32,14 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         highlightr.setTheme(to: "tomorrow")
         
         // load content from file model
-//        if let contents: String =  self.fileEditing?.contents {
-//            let attributedString = NSAttributedString(string: contents)
-//            self.textStorage.setAttributedString(attributedString)
-//        }
         if let contents: String =  self.fileEditing?.contents {
             updateHightlighting(text: contents)
         }
         
-        // Add markdown syntax highlighting to text view
-//        textStorage.addLayoutManager(editorTextView.layoutManager)
-        
         // set title with filename
-        self.navigationItem.title = fileEditing?.fileName
+//        self.navigationItem.title = fileEditing?.fileName
+//        self.title = fileEditing?.fileName
+        self.tabBarController?.title = fileEditing?.fileName
         
         // get notified when the keyboard appears and disappears
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
