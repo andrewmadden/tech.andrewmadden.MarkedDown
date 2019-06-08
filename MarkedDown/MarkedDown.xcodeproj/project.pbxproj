@@ -364,6 +364,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-MarkedDown/Pods-MarkedDown-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
+				"${BUILT_PRODUCTS_DIR}/Highlightr/Highlightr.framework",
 				"${BUILT_PRODUCTS_DIR}/Marklight/Marklight.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -371,6 +372,7 @@
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Highlightr.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Marklight.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

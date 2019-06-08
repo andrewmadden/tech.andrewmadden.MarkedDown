@@ -8,6 +8,7 @@
 
 import UIKit
 import Marklight
+import Highlightr
 
 enum CursorPosition {
     case start
@@ -23,21 +24,28 @@ class EditorViewController: UIViewController, UITextViewDelegate {
 //    let textStorage = NSTextStorage()
     let textStorage = MarklightTextStorage()
     var fileEditing: MarkdownFile? = nil
+    let highlightr = Highlightr()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         editorTextView.delegate = self
         
+        // set up highlightr
+        highlightr?.setTheme(to: "paraiso-dark")
+        
         // load content from file model
+//        if let contents: String =  self.fileEditing?.contents {
+//            let attributedString = NSAttributedString(string: contents)
+//            self.textStorage.setAttributedString(attributedString)
+//        }
         if let contents: String =  self.fileEditing?.contents {
             let attributedString = NSAttributedString(string: contents)
             self.textStorage.setAttributedString(attributedString)
         }
         
-        
         // Add markdown syntax highlighting to text view
-        textStorage.addLayoutManager(editorTextView.layoutManager)
+//        textStorage.addLayoutManager(editorTextView.layoutManager)
         
         // set title with filename
         self.navigationItem.title = fileEditing?.fileName
