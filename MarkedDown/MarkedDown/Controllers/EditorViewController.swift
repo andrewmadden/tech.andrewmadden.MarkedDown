@@ -22,9 +22,9 @@ class EditorViewController: UIViewController, UITextViewDelegate {
 
     // DEBUG user default text storage
 //    let textStorage = NSTextStorage()
-    let textStorage = MarklightTextStorage()
+//    let textStorage = MarklightTextStorage()
     var fileEditing: MarkdownFile? = nil
-    let highlightr = Highlightr()
+    let highlightr = Highlightr()!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +32,7 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         editorTextView.delegate = self
         
         // set up highlightr
-        highlightr?.setTheme(to: "paraiso-dark")
+        highlightr.setTheme(to: "tomorrow")
         
         // load content from file model
 //        if let contents: String =  self.fileEditing?.contents {
@@ -40,8 +40,7 @@ class EditorViewController: UIViewController, UITextViewDelegate {
 //            self.textStorage.setAttributedString(attributedString)
 //        }
         if let contents: String =  self.fileEditing?.contents {
-            let attributedString = NSAttributedString(string: contents)
-            self.textStorage.setAttributedString(attributedString)
+            updateHightlighting(text: contents)
         }
         
         // Add markdown syntax highlighting to text view
@@ -116,7 +115,8 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         // get cursor position
         let selectedRange = editorTextView.selectedRange
         // add syntax
-        self.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+        editorTextView.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+        updateHightlighting(text: editorTextView.textStorage.string)
         // set cursor
         var newPosition: NSRange?
         switch (cursorPosition) {
@@ -132,9 +132,16 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         }
     }
     
-    // publishes notification with contents when editor changes
+    func updateHightlighting(text: String) {
+        if let highlightedCode = highlightr.highlight(text, as: "markdown") {
+            editorTextView.textStorage.setAttributedString(highlightedCode)
+        }
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
         if let text: String =  textView.layoutManager.textStorage?.string {
+            updateHightlighting(text: text)
+            // update file model
             fileEditing?.contents = text
             NotificationCenter.default.post(Notification(name: Notification.Name("EditorContentsUpdated"), object: nil))
         }
