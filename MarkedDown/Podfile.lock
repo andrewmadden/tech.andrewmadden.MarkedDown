@@ -1,24 +1,24 @@
 PODS:
   - Down (0.8.1)
   - Highlightr (2.1.0)
-  - Marklight (1.4.0)
+  - SideMenu (5.0.3)
 
 DEPENDENCIES:
   - Down
   - Highlightr
-  - Marklight
+  - SideMenu
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Down
     - Highlightr
-    - Marklight
+    - SideMenu
 
 SPEC CHECKSUMS:
   Down: 3aa5ab1aee1a2ffff3c07291e9210dac5cc462cd
   Highlightr: 595f3e100737c8de41113385da8bd0b5b65212c6
-  Marklight: 2489d376cd3d3e7b1d109cd7d6d248fd9b8e0bee
+  SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
 
-PODFILE CHECKSUM: 454ad99d7ea53756d2f1500e4997425f2ef5a7dd
+PODFILE CHECKSUM: eb5f8466e5fcd8b0eacfd134fed9cbfaeb6f58d9
 
 COCOAPODS: 1.7.1

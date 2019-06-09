@@ -8,7 +8,7 @@ target 'MarkedDown' do
   # Pods for MarkedDown
   
   pod 'Down'
-  pod 'Marklight'  
+  pod 'SideMenu'  
   pod 'Highlightr'
 
   target 'MarkedDownTests' do
