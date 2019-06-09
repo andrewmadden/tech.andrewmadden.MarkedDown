@@ -53,6 +53,8 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         let toolbar = UIToolbar()
         
         // setup buttons
+//        let undoButton = UIBarButtonItem(title: "undo", style: .plain, target: self, action: #selector(undo))
+//        let redoButton  = UIBarButtonItem(title: "redo", style: .plain, target: self, action: #selector(redo))
         let H1 = UIBarButtonItem(title: "H1", style: .plain, target: self, action: #selector(inputH1))
         let H2 = UIBarButtonItem(title: "H2", style: .plain, target: self, action: #selector(inputH2))
         let H3 = UIBarButtonItem(title: "H3", style: .plain, target: self, action: #selector(inputH3))
@@ -68,9 +70,25 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         
         // add the toolbar to the keyboard
         editorTextView.inputAccessoryView = toolbar
+        
+        // add undo and redo buttons to toolbar
+        let undoButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.undo, target: self, action: #selector(undo))
+        let redoButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.redo, target: self, action: #selector(redo))
+        self.tabBarController?.navigationItem.rightBarButtonItems = [undoButton, redoButton]
     }
     
+    
+    
     // toolbar button functions
+    
+    @objc private func undo() {
+        if ( editorTextView.undoManager?.canUndo == true ) { editorTextView.undoManager?.undo() }
+    }
+    
+    @objc private func redo() {
+        if ( editorTextView.undoManager?.canRedo == true ) { editorTextView.undoManager?.redo() }
+    }
+    
     @objc private func inputH1() {
         insertSyntax("\n# ", setCursorTo: .end)
     }
@@ -105,10 +123,13 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     
     private func insertSyntax(_ syntax: String, setCursorTo cursorPosition: CursorPosition) {
         // get cursor position
-        let selectedRange = editorTextView.selectedRange
+        let selectedRange: NSRange = editorTextView.selectedRange
+        guard let selectedTextRange: UITextRange = editorTextView.selectedTextRange else { return }
         // add syntax
-        editorTextView.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+//        editorTextView.textStorage.replaceCharacters(in: selectedRange, with: syntax)
+        editorTextView.replace(selectedTextRange, withText: syntax)
         updateHightlighting(text: editorTextView.textStorage.string)
+        
         // set cursor
         var newPosition: NSRange?
         switch (cursorPosition) {
@@ -165,4 +186,5 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         let selectedRange = editorTextView.selectedRange
         editorTextView.scrollRangeToVisible(selectedRange)
     }
+
 }
