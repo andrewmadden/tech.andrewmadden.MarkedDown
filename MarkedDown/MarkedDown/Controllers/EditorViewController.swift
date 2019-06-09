@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Marklight
+import SideMenu
 import Highlightr
 
 enum CursorPosition {
@@ -37,16 +37,31 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         }
         
         // set title with filename
-//        self.navigationItem.title = fileEditing?.fileName
-//        self.title = fileEditing?.fileName
         self.tabBarController?.title = fileEditing?.fileName
         
         // get notified when the keyboard appears and disappears
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         
+        setupSideMenu()
+        
         // attach toolbar to keyboard when textview is editing
         setupToolbar()
+        
+    }
+    
+    private func setupSideMenu() {
+        // setup side menu
+        let menuRightNavigationController = UISideMenuNavigationController(rootViewController: self.tabBarController ?? self)
+        SideMenuManager.default.menuRightNavigationController = menuRightNavigationController
+        
+        // add navigation menu buttons
+        let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(presentSideMenu))
+        self.tabBarController?.navigationItem.rightBarButtonItems?.append(menuButton)
+    }
+    
+    @objc func presentSideMenu() {
+        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
     
     private func setupToolbar() {
