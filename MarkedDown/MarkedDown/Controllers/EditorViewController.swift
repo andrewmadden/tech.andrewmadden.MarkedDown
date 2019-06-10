@@ -16,7 +16,13 @@ enum CursorPosition {
     case end
 }
 
-class EditorViewController: UIViewController, UITextViewDelegate {
+enum MarkedDownFileType {
+    case pdf
+    case md
+    case html
+}
+
+class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // main text view
     @IBOutlet weak var editorTextView: UITextView!
 
@@ -69,43 +75,34 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     @objc func exportAlert() {
         let alert = UIAlertController(title: "Export File", message: "Choose a format", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Export as MarkDown", style: .default, handler: { (_) in
-            // share markdown file
-            if let fileData = self.fileEditing {
-                if let mdData: Data = FileGenerator.generateMarkdownData(fileKey: fileData.fileKey, markdownString: fileData.contents ?? "") {
-                    let activity = UIActivityViewController(
-                        activityItems: [mdData],
-                        applicationActivities: nil
-                    )
-                    self.present(activity, animated: true, completion: nil)
-                } 
-            }
+            self.shareData(fileType: .md)
         }))
         alert.addAction(UIAlertAction(title: "Export as HTML", style: .default, handler: { (_) in
-            // share markdown file
-            if let fileData = self.fileEditing {
-                if let htmlData: Data = FileGenerator.generateHTMLData(fileKey: fileData.fileName, markdownString: fileData.contents ?? "") {
-                    let activity = UIActivityViewController(
-                        activityItems: [htmlData],
-                        applicationActivities: nil
-                    )
-                    self.present(activity, animated: true, completion: nil)
-                }
-            }
+            self.shareData(fileType: .html)
         }))
         alert.addAction(UIAlertAction(title: "Export as PDF", style: .default, handler: { (_) in
-            // share markdown file
-            if let fileData = self.fileEditing {
-                if let pdfData: Data = FileGenerator.generatePDFData(fileKey: fileData.fileName, markdownString: fileData.contents ?? "") {
-                    let activity = UIActivityViewController(
-                        activityItems: [pdfData],
-                        applicationActivities: nil
-                    )
-                    self.present(activity, animated: true, completion: nil)
-                }
-            }
+            self.shareData(fileType: .pdf)
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true)
+    }
+    
+    func shareData(fileType: MarkedDownFileType) {
+        guard let file = self.fileEditing else { return }
+        let data: Data?
+        switch (fileType) {
+        case .md: data = FileGenerator.generateMarkdownData(markdownString: file.contents ?? "")
+        break
+        case .html: data = FileGenerator.generateHTMLData(markdownString: file.contents ?? "")
+        break
+        case .pdf: data = FileGenerator.generatePDFData(markdownString: file.contents ?? "")
+        break
+        }
+        let activity = UIActivityViewController(
+            activityItems: [data],
+            applicationActivities: nil
+        )
+        self.present(activity, animated: true, completion: nil)
     }
     
     @objc func presentSideMenu() {
@@ -120,15 +117,16 @@ class EditorViewController: UIViewController, UITextViewDelegate {
 //        let redoButton  = UIBarButtonItem(title: "redo", style: .plain, target: self, action: #selector(redo))
         let H1 = UIBarButtonItem(title: "H1", style: .plain, target: self, action: #selector(inputH1))
         let H2 = UIBarButtonItem(title: "H2", style: .plain, target: self, action: #selector(inputH2))
-        let H3 = UIBarButtonItem(title: "H3", style: .plain, target: self, action: #selector(inputH3))
         let bold = UIBarButtonItem(image: #imageLiteral(resourceName: "BoldImage"), style: .plain, target: self, action: #selector(inputBold))
         let italic = UIBarButtonItem(image: #imageLiteral(resourceName: "ItalicImage"), style: .plain, target: self, action: #selector(inputItalic))
         let code = UIBarButtonItem(image: #imageLiteral(resourceName: "CodeImage"), style: .plain, target: self, action: #selector(inputCodeBlock))
         let quote = UIBarButtonItem(image: #imageLiteral(resourceName: "QuoteImage"), style: .plain, target: self, action: #selector(inputBlockQuote))
         let separator = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLineSeparator))
+        let link = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLink))
+        let image = UIBarButtonItem(image: #imageLiteral(resourceName: "PictureImage"), style: .plain, target: self, action: #selector(importImage))
         
         // add buttons to toolbar
-        toolbar.items = [H1, H2, H3, bold, italic, code, quote, separator]
+        toolbar.items = [H1, H2, bold, italic, code, quote, separator, link, image]
         toolbar.sizeToFit()
         
         // add the toolbar to the keyboard
@@ -155,10 +153,6 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         insertSyntax("\n## ", setCursorTo: .end)
     }
     
-    @objc private func inputH3() {
-        insertSyntax("\n### ", setCursorTo: .end)
-    }
-    
     @objc private func inputBold() {
         insertSyntax("****", setCursorTo: .middle)
     }
@@ -177,6 +171,21 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     
     @objc private func inputLineSeparator() {
         insertSyntax("\n***\n", setCursorTo: .end)
+    }
+    
+    @objc private func inputLink() {
+        insertSyntax("[]()  ", setCursorTo: .middle)
+    }
+    
+    private func inputImage(location path: URL) {
+        insertSyntax("![](\(path.relativeString))", setCursorTo: .end)
+    }
+    
+    @objc func importImage() {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        present(picker, animated: true)
     }
     
     private func insertSyntax(_ syntax: String, setCursorTo cursorPosition: CursorPosition) {
@@ -201,6 +210,12 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         if let newPosition: NSRange = newPosition {
             editorTextView.selectedRange = newPosition
         }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+//        guard let image = info[.editedImage] as? UIImage else { return }
+        if let path = info[.imageURL] as? URL  { inputImage(location: path) }
+        dismiss(animated: true)
     }
     
     func updateHightlighting(text: String) {

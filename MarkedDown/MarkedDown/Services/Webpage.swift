@@ -237,12 +237,6 @@ class Webpage {
       font-size: 1em;
     }
 
-    .markdown-body hr {
-      box-sizing: content-box;
-      height: 0;
-      overflow: visible;
-    }
-
     .markdown-body input {
       font: inherit;
       margin: 0;
@@ -280,24 +274,13 @@ class Webpage {
       font-weight: 600;
     }
 
-    .markdown-body hr {
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid #dfe2e5;
-      height: 0;
-      margin: 15px 0;
-      overflow: hidden;
-    }
-
     .markdown-body hr:before {
       content: "";
-      display: table;
     }
 
     .markdown-body hr:after {
       clear: both;
       content: "";
-      display: table;
     }
 
     .markdown-body table {
@@ -541,11 +524,7 @@ class Webpage {
     }
 
     .markdown-body hr {
-      background-color: #e1e4e8;
-      border: 0;
-      height: .25em;
-      margin: 24px 0;
-      padding: 0;
+      color: #888888;
     }
 
     .markdown-body blockquote {
@@ -913,10 +892,6 @@ class Webpage {
     .markdown-body .task-list-item input {
       margin: 0 .2em .25em -1.6em;
       vertical-align: middle;
-    }
-
-    .markdown-body hr {
-      border-bottom-color: #eee;
     }
 
     .markdown-body .pl-0 {

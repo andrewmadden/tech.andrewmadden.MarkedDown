@@ -20,6 +20,10 @@
 		492D5A6D22956477002D8AEB /* FileDirectoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A6C22956477002D8AEB /* FileDirectoryViewController.swift */; };
 		492D5A73229AB19A002D8AEB /* Webpage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A72229AB19A002D8AEB /* Webpage.swift */; };
 		492D5A7522AE254F002D8AEB /* FileGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492D5A7422AE254F002D8AEB /* FileGenerator.swift */; };
+		492D5ABB22AE8C84002D8AEB /* down.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AB622AE8C83002D8AEB /* down.min.css */; };
+		492D5ABC22AE8C84002D8AEB /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AB722AE8C84002D8AEB /* index.html */; };
+		492D5ABD22AE8C84002D8AEB /* down.js in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AB922AE8C84002D8AEB /* down.js */; };
+		492D5ABE22AE8C84002D8AEB /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 492D5ABA22AE8C84002D8AEB /* highlight.min.js */; };
 		6F1261A53693DC8CFD5FFD15 /* Pods_MarkedDownTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BF15C86BD5F2A1E4F3FF8C0 /* Pods_MarkedDownTests.framework */; };
 		A520D324DCBE57D47E68339E /* Pods_MarkedDown.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D4679BC67F0B6DE5F4935F3 /* Pods_MarkedDown.framework */; };
 /* End PBXBuildFile section */
@@ -63,6 +67,10 @@
 		492D5A6C22956477002D8AEB /* FileDirectoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDirectoryViewController.swift; sourceTree = "<group>"; };
 		492D5A72229AB19A002D8AEB /* Webpage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webpage.swift; sourceTree = "<group>"; };
 		492D5A7422AE254F002D8AEB /* FileGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileGenerator.swift; sourceTree = "<group>"; };
+		492D5AB622AE8C83002D8AEB /* down.min.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = down.min.css; sourceTree = "<group>"; };
+		492D5AB722AE8C84002D8AEB /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = Pods/Down/Resources/DownView.bundle/index.html; sourceTree = SOURCE_ROOT; };
+		492D5AB922AE8C84002D8AEB /* down.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = down.js; sourceTree = "<group>"; };
+		492D5ABA22AE8C84002D8AEB /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = highlight.min.js; sourceTree = "<group>"; };
 		5D4679BC67F0B6DE5F4935F3 /* Pods_MarkedDown.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MarkedDown.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62EB30EED4F2140053453D63 /* Pods-MarkedDownUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDownUITests.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDownUITests/Pods-MarkedDownUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		71B557B829A4263CBA26A6F2 /* Pods-MarkedDown.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDown.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDown/Pods-MarkedDown.debug.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +132,7 @@
 		492D5A322282E5E6002D8AEB /* MarkedDown */ = {
 			isa = PBXGroup;
 			children = (
+				492D5AB422AE8C17002D8AEB /* resources */,
 				492D5A6722955892002D8AEB /* Model */,
 				492D5A642282E752002D8AEB /* Services */,
 				492D5A632282E748002D8AEB /* Controllers */,
@@ -180,6 +189,35 @@
 			);
 			path = Model;
 			sourceTree = "<group>";
+		};
+		492D5AB422AE8C17002D8AEB /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				492D5AB522AE8C83002D8AEB /* css */,
+				492D5AB722AE8C84002D8AEB /* index.html */,
+				492D5AB822AE8C84002D8AEB /* js */,
+			);
+			path = resources;
+			sourceTree = "<group>";
+		};
+		492D5AB522AE8C83002D8AEB /* css */ = {
+			isa = PBXGroup;
+			children = (
+				492D5AB622AE8C83002D8AEB /* down.min.css */,
+			);
+			name = css;
+			path = Pods/Down/Resources/DownView.bundle/css;
+			sourceTree = SOURCE_ROOT;
+		};
+		492D5AB822AE8C84002D8AEB /* js */ = {
+			isa = PBXGroup;
+			children = (
+				492D5AB922AE8C84002D8AEB /* down.js */,
+				492D5ABA22AE8C84002D8AEB /* highlight.min.js */,
+			);
+			name = js;
+			path = Pods/Down/Resources/DownView.bundle/js;
+			sourceTree = SOURCE_ROOT;
 		};
 		4B712653D313263D0B4646D7 /* Pods */ = {
 			isa = PBXGroup;
@@ -312,9 +350,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				492D5ABD22AE8C84002D8AEB /* down.js in Resources */,
+				492D5ABC22AE8C84002D8AEB /* index.html in Resources */,
 				492D5A3E2282E5E7002D8AEB /* LaunchScreen.storyboard in Resources */,
+				492D5ABB22AE8C84002D8AEB /* down.min.css in Resources */,
 				492D5A3B2282E5E7002D8AEB /* Assets.xcassets in Resources */,
 				492D5A392282E5E6002D8AEB /* Main.storyboard in Resources */,
+				492D5ABE22AE8C84002D8AEB /* highlight.min.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

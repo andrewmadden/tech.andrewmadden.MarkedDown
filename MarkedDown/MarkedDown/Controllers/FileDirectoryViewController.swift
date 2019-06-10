@@ -136,7 +136,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "fileCell", for: indexPath)
         // strip .md from filename
-        cell.textLabel?.text = String(files[indexPath.row].prefix(files[indexPath.row].count - 3))
+        cell.textLabel?.text = files[indexPath.row].fileKey()
         return cell
     }
 
