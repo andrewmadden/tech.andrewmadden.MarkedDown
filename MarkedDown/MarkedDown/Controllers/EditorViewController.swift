@@ -177,8 +177,8 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         insertSyntax("[]()  ", setCursorTo: .middle)
     }
     
-    private func inputImage(location path: URL) {
-        insertSyntax("![](\(path.relativeString))", setCursorTo: .end)
+    private func inputImage(location path: URL, fileName: String = "description") {
+        insertSyntax("![\(fileName)](\(path.relativeString))", setCursorTo: .end)
     }
     
     @objc func importImage() {
@@ -214,7 +214,18 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
 //        guard let image = info[.editedImage] as? UIImage else { return }
-        if let path = info[.imageURL] as? URL  { inputImage(location: path) }
+        if let sourcePath = info[.imageURL] as? URL  {
+            // copy image to bundle and get link
+            let fileName = sourcePath.lastPathComponent
+            let bundlePath = Bundle.main.bundleURL
+            var destPath = bundlePath.appendingPathComponent("resources")
+            destPath = destPath.appendingPathComponent(fileName, isDirectory: false)
+            // TODO handle error that file cannot be added to bundle
+            try? FileManager.default.copyItem(at: sourcePath, to: destPath)
+            
+            inputImage(location: destPath, fileName: fileName)
+            
+        }
         dismiss(animated: true)
     }
     

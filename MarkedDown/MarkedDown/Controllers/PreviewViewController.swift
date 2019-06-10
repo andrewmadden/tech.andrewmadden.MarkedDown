@@ -15,6 +15,7 @@ class PreviewViewController: UIViewController {
     
     var html = ""
     var fileEditing: MarkdownFile? = nil
+    var downView: DownView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,12 +30,15 @@ class PreviewViewController: UIViewController {
     
     private func loadHTML(from contents: String?) {
         if let contents = contents {
+            downView = try? DownView(frame: self.view.bounds, markdownString: contents, templateBundle: Bundle.main) {
+                self.view.addSubview(self.downView!)
+            }
             
-            // create HTML from file contents
-            self.html = try! Down(markdownString: contents).toHTML()
-            // boilerplate for webpage
-            let webpageHTML: String = Webpage().boilerplate(self.html)
-            self.webPreview?.loadHTMLString(webpageHTML, baseURL: nil)
+//            // create HTML from file contents
+//            self.html = try! Down(markdownString: contents).toHTML()
+//            // boilerplate for webpage
+//            let webpageHTML: String = Webpage().boilerplate(self.html)
+//            self.webPreview?.loadHTMLString(webpageHTML, baseURL: nil)
         }
     }
     

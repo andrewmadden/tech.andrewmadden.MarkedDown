@@ -24,6 +24,7 @@
 		492D5ABC22AE8C84002D8AEB /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AB722AE8C84002D8AEB /* index.html */; };
 		492D5ABD22AE8C84002D8AEB /* down.js in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AB922AE8C84002D8AEB /* down.js */; };
 		492D5ABE22AE8C84002D8AEB /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 492D5ABA22AE8C84002D8AEB /* highlight.min.js */; };
+		492D5AC122AE94B4002D8AEB /* down-arrow(2).png in Resources */ = {isa = PBXBuildFile; fileRef = 492D5AC022AE94B4002D8AEB /* down-arrow(2).png */; };
 		6F1261A53693DC8CFD5FFD15 /* Pods_MarkedDownTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BF15C86BD5F2A1E4F3FF8C0 /* Pods_MarkedDownTests.framework */; };
 		A520D324DCBE57D47E68339E /* Pods_MarkedDown.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D4679BC67F0B6DE5F4935F3 /* Pods_MarkedDown.framework */; };
 /* End PBXBuildFile section */
@@ -71,6 +72,7 @@
 		492D5AB722AE8C84002D8AEB /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = Pods/Down/Resources/DownView.bundle/index.html; sourceTree = SOURCE_ROOT; };
 		492D5AB922AE8C84002D8AEB /* down.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = down.js; sourceTree = "<group>"; };
 		492D5ABA22AE8C84002D8AEB /* highlight.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = highlight.min.js; sourceTree = "<group>"; };
+		492D5AC022AE94B4002D8AEB /* down-arrow(2).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "down-arrow(2).png"; path = "../../../../../../../../../Downloads/down-arrow(2).png"; sourceTree = "<group>"; };
 		5D4679BC67F0B6DE5F4935F3 /* Pods_MarkedDown.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MarkedDown.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62EB30EED4F2140053453D63 /* Pods-MarkedDownUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDownUITests.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDownUITests/Pods-MarkedDownUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		71B557B829A4263CBA26A6F2 /* Pods-MarkedDown.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MarkedDown.debug.xcconfig"; path = "Target Support Files/Pods-MarkedDown/Pods-MarkedDown.debug.xcconfig"; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 		492D5AB422AE8C17002D8AEB /* resources */ = {
 			isa = PBXGroup;
 			children = (
+				492D5ABF22AE90CB002D8AEB /* images */,
 				492D5AB522AE8C83002D8AEB /* css */,
 				492D5AB722AE8C84002D8AEB /* index.html */,
 				492D5AB822AE8C84002D8AEB /* js */,
@@ -218,6 +221,14 @@
 			name = js;
 			path = Pods/Down/Resources/DownView.bundle/js;
 			sourceTree = SOURCE_ROOT;
+		};
+		492D5ABF22AE90CB002D8AEB /* images */ = {
+			isa = PBXGroup;
+			children = (
+				492D5AC022AE94B4002D8AEB /* down-arrow(2).png */,
+			);
+			path = images;
+			sourceTree = "<group>";
 		};
 		4B712653D313263D0B4646D7 /* Pods */ = {
 			isa = PBXGroup;
@@ -357,6 +368,7 @@
 				492D5A3B2282E5E7002D8AEB /* Assets.xcassets in Resources */,
 				492D5A392282E5E6002D8AEB /* Main.storyboard in Resources */,
 				492D5ABE22AE8C84002D8AEB /* highlight.min.js in Resources */,
+				492D5AC122AE94B4002D8AEB /* down-arrow(2).png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
