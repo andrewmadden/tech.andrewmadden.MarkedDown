@@ -70,12 +70,37 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         let alert = UIAlertController(title: "Export File", message: "Choose a format", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Export as MarkDown", style: .default, handler: { (_) in
            // share markdown file
+            if let fileData = self.fileEditing {
+                let activity = UIActivityViewController(
+                    activityItems: ["Export md", fileData.filePath],
+                    applicationActivities: nil
+                )
+                self.present(activity, animated: true, completion: nil)
+            }
         }))
         alert.addAction(UIAlertAction(title: "Export as HTML", style: .default, handler: { (_) in
             // share markdown file
+            if let fileData = self.fileEditing {
+                if let htmlFilePath: URL = FileGenerator.generateHTMLfromMarkdownString(fileKey: fileData.fileName, contents: fileData.contents ?? "") {
+                    let activity = UIActivityViewController(
+                        activityItems: ["Export html", htmlFilePath],
+                        applicationActivities: nil
+                    )
+                    self.present(activity, animated: true, completion: nil)
+                }
+            }
         }))
         alert.addAction(UIAlertAction(title: "Export as PDF", style: .default, handler: { (_) in
             // share markdown file
+            if let fileData = self.fileEditing {
+                if let pdfFilePath: URL = FileGenerator.generatePDFfromMarkdownString(fileKey: fileData.fileName, contents: fileData.contents ?? "") {
+                    let activity = UIActivityViewController(
+                        activityItems: ["Export pdf", pdfFilePath],
+                        applicationActivities: nil
+                    )
+                    self.present(activity, animated: true, completion: nil)
+                }
+            }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true)

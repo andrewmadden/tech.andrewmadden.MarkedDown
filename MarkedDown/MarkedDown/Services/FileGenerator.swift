@@ -59,8 +59,22 @@ class FileGenerator {
         
     }
     
-    static func generateHTMLfromMarkdownString(contents: String) {
-//        let down = Down(markdownString: contents)
+    static func generateHTMLfromMarkdownString(fileKey: String, contents: String) -> URL? {
+        let fm = FileManager()
+        
+        // create attribute string representing html
+        let down = Down(markdownString: contents)
+        guard let html = try? down.toHTML() else { return nil }
+        
+        // create data for pdf file
+        let data = Data(base64Encoded: html)
+        
+        // save pdf file to temp directory
+        let tempDir = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let tempFilePath = tempDir.appendingPathComponent(fileKey).appendingPathExtension("html")
+        fm.createFile(atPath: tempFilePath.relativePath, contents: data, attributes: nil)
+        
+        return tempFilePath
     }
     
     static func generateHTMLfromMarkdownFile(filePath: String) {
