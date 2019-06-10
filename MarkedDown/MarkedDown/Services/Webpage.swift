@@ -34,7 +34,6 @@ class Webpage {
         <style>\(self.style)</style>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style> body { font-size: 120%; } </style>
         </head>
         <body>
         <article class="markdown-body">
