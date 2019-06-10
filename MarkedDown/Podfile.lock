@@ -1,5 +1,5 @@
 PODS:
-  - Down (0.8.1)
+  - Down (0.8.4)
   - Highlightr (2.1.0)
   - SideMenu (5.0.3)
 
@@ -15,10 +15,10 @@ SPEC REPOS:
     - SideMenu
 
 SPEC CHECKSUMS:
-  Down: 3aa5ab1aee1a2ffff3c07291e9210dac5cc462cd
+  Down: 533c1fc9a76275c150f924441e2907c07ddd9891
   Highlightr: 595f3e100737c8de41113385da8bd0b5b65212c6
   SideMenu: 1dcaabce84538c53325c287f7fe62999379a641c
 
 PODFILE CHECKSUM: eb5f8466e5fcd8b0eacfd134fed9cbfaeb6f58d9
 
-COCOAPODS: 1.7.1
+COCOAPODS: 1.6.1

@@ -52,12 +52,33 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     
     private func setupSideMenu() {
         // setup side menu
-        let menuRightNavigationController = UISideMenuNavigationController(rootViewController: self.tabBarController ?? self)
-        SideMenuManager.default.menuRightNavigationController = menuRightNavigationController
+//        let menuRightNavigationController = UISideMenuNavigationController(rootViewController: self.tabBarController ?? self)
+//        SideMenuManager.default.menuRightNavigationController = menuRightNavigationController
         
         // add navigation menu buttons
-        let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(presentSideMenu))
-        self.tabBarController?.navigationItem.rightBarButtonItems?.append(menuButton)
+//        let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(presentSideMenu))
+//        self.tabBarController?.navigationItem.rightBarButtonItems?.append(menuButton)
+        
+        // add undo and redo buttons to toolbar
+        let undoButton = UIBarButtonItem(image: #imageLiteral(resourceName: "UndoImage"), style: .plain, target: self, action: #selector(undo))
+        let redoButton = UIBarButtonItem(image: #imageLiteral(resourceName: "RedoImage"), style: .plain, target: self, action: #selector(redo))
+        let exportButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ExportImage"), style: .plain, target: self, action: #selector(exportAlert))
+        self.tabBarController?.navigationItem.rightBarButtonItems = [exportButton, redoButton, undoButton]
+    }
+    
+    @objc func exportAlert() {
+        let alert = UIAlertController(title: "Export File", message: "Choose a format", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Export as MarkDown", style: .default, handler: { (_) in
+           // share markdown file
+        }))
+        alert.addAction(UIAlertAction(title: "Export as HTML", style: .default, handler: { (_) in
+            // share markdown file
+        }))
+        alert.addAction(UIAlertAction(title: "Export as PDF", style: .default, handler: { (_) in
+            // share markdown file
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true)
     }
     
     @objc func presentSideMenu() {
@@ -85,11 +106,6 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         
         // add the toolbar to the keyboard
         editorTextView.inputAccessoryView = toolbar
-        
-        // add undo and redo buttons to toolbar
-        let undoButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.undo, target: self, action: #selector(undo))
-        let redoButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.redo, target: self, action: #selector(redo))
-        self.tabBarController?.navigationItem.rightBarButtonItems = [undoButton, redoButton]
     }
     
     
