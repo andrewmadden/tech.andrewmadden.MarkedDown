@@ -9,6 +9,17 @@
 import Foundation
 //import Down
 
+extension String {
+    
+    func fileKey() -> String {
+        return NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent ?? ""
+    }
+    
+    func fileExtension() -> String {
+        return NSURL(fileURLWithPath: self).pathExtension ?? ""
+    }
+}
+
 class MarkdownFile {
     var fileName: String
     var filePath: URL
@@ -30,6 +41,10 @@ class MarkdownFile {
                 print("failed to save file")
             }
         }
+    }
+    
+    var fileKey: String {
+        return self.fileName.fileKey()
     }
     
     private func getContentsFromFile() {

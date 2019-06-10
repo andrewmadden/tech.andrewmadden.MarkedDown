@@ -69,21 +69,23 @@ class EditorViewController: UIViewController, UITextViewDelegate {
     @objc func exportAlert() {
         let alert = UIAlertController(title: "Export File", message: "Choose a format", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Export as MarkDown", style: .default, handler: { (_) in
-           // share markdown file
+            // share markdown file
             if let fileData = self.fileEditing {
-                let activity = UIActivityViewController(
-                    activityItems: ["Export md", fileData.filePath],
-                    applicationActivities: nil
-                )
-                self.present(activity, animated: true, completion: nil)
+                if let mdData: Data = FileGenerator.generateMarkdownData(fileKey: fileData.fileKey, markdownString: fileData.contents ?? "") {
+                    let activity = UIActivityViewController(
+                        activityItems: [mdData],
+                        applicationActivities: nil
+                    )
+                    self.present(activity, animated: true, completion: nil)
+                } 
             }
         }))
         alert.addAction(UIAlertAction(title: "Export as HTML", style: .default, handler: { (_) in
             // share markdown file
             if let fileData = self.fileEditing {
-                if let htmlFilePath: URL = FileGenerator.generateHTMLfromMarkdownString(fileKey: fileData.fileName, contents: fileData.contents ?? "") {
+                if let htmlData: Data = FileGenerator.generateHTMLData(fileKey: fileData.fileName, markdownString: fileData.contents ?? "") {
                     let activity = UIActivityViewController(
-                        activityItems: ["Export html", htmlFilePath],
+                        activityItems: [htmlData],
                         applicationActivities: nil
                     )
                     self.present(activity, animated: true, completion: nil)
@@ -93,9 +95,9 @@ class EditorViewController: UIViewController, UITextViewDelegate {
         alert.addAction(UIAlertAction(title: "Export as PDF", style: .default, handler: { (_) in
             // share markdown file
             if let fileData = self.fileEditing {
-                if let pdfFilePath: URL = FileGenerator.generatePDFfromMarkdownString(fileKey: fileData.fileName, contents: fileData.contents ?? "") {
+                if let pdfData: Data = FileGenerator.generatePDFData(fileKey: fileData.fileName, markdownString: fileData.contents ?? "") {
                     let activity = UIActivityViewController(
-                        activityItems: ["Export pdf", pdfFilePath],
+                        activityItems: [pdfData],
                         applicationActivities: nil
                     )
                     self.present(activity, animated: true, completion: nil)
