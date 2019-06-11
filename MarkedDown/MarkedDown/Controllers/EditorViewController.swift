@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import SideMenu
 import Highlightr
 
 enum CursorPosition {
@@ -57,13 +56,6 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
     }
     
     private func setupSideMenu() {
-        // setup side menu
-//        let menuRightNavigationController = UISideMenuNavigationController(rootViewController: self.tabBarController ?? self)
-//        SideMenuManager.default.menuRightNavigationController = menuRightNavigationController
-        
-        // add navigation menu buttons
-//        let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(presentSideMenu))
-//        self.tabBarController?.navigationItem.rightBarButtonItems?.append(menuButton)
         
         // add undo and redo buttons to toolbar
         let undoButton = UIBarButtonItem(image: #imageLiteral(resourceName: "UndoImage"), style: .plain, target: self, action: #selector(undo))
@@ -88,25 +80,32 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
     }
     
     func shareData(fileType: MarkedDownFileType) {
-        guard let file = self.fileEditing else { return }
+        guard let file = self.fileEditing else {
+            presentError(message: "Could not share file")
+            return
+        }
         let data: Data?
+        guard let contents = file.contents else {
+            presentError(message: "Could not share file")
+            return
+        }
         switch (fileType) {
-        case .md: data = FileGenerator.generateMarkdownData(markdownString: file.contents ?? "")
+        case .md: data = FileGenerator.generateMarkdownData(markdownString: contents)
         break
-        case .html: data = FileGenerator.generateHTMLData(markdownString: file.contents ?? "")
+        case .html: data = FileGenerator.generateHTMLData(markdownString: contents)
         break
-        case .pdf: data = FileGenerator.generatePDFData(markdownString: file.contents ?? "")
+        case .pdf: data = FileGenerator.generatePDFData(markdownString: contents)
         break
         }
+        guard let fileData = data else {
+            presentError(message: "Could not share file")
+            return
+        }
         let activity = UIActivityViewController(
-            activityItems: [data],
+            activityItems: [fileData],
             applicationActivities: nil
         )
         self.present(activity, animated: true, completion: nil)
-    }
-    
-    @objc func presentSideMenu() {
-        present(SideMenuManager.default.menuLeftNavigationController!, animated: true, completion: nil)
     }
     
     private func setupToolbar() {
@@ -269,6 +268,12 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         
         let selectedRange = editorTextView.selectedRange
         editorTextView.scrollRangeToVisible(selectedRange)
+    }
+    
+    func presentError(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true)
     }
 
 }

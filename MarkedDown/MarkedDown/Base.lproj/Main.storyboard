@@ -10,54 +10,6 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
-        <scene sceneID="ohU-Vb-7kV">
-            <objects>
-                <tableViewController id="B7T-UV-V1l" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="dO2-oZ-0z2">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="sDG-bV-wkJ">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sDG-bV-wkJ" id="ROU-sx-5vk">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="B7T-UV-V1l" id="KeU-V6-XnI"/>
-                            <outlet property="delegate" destination="B7T-UV-V1l" id="e57-xv-EVl"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="F5A-l1-kNq"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SEZ-nA-eY0" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1359" y="1077"/>
-        </scene>
-        <!--Side Menu Navigation Controller-->
-        <scene sceneID="ZNd-zQ-98B">
-            <objects>
-                <navigationController id="oz2-IF-fQe" customClass="UISideMenuNavigationController" customModule="SideMenu" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="yyU-Bv-KYh">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="leftSide" value="NO"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <segue destination="B7T-UV-V1l" kind="relationship" relationship="rootViewController" id="oSE-3u-mtw"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZsU-Qd-onS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="441" y="1077"/>
-        </scene>
         <!--Preview-->
         <scene sceneID="O6V-0n-aKx">
             <objects>
@@ -178,7 +130,6 @@
                     <connections>
                         <segue destination="BVc-id-Eqg" kind="relationship" relationship="viewControllers" id="CH4-Ip-HQO"/>
                         <segue destination="8vd-Sj-Q7U" kind="relationship" relationship="viewControllers" id="pJC-y1-oQe"/>
-                        <segue destination="oz2-IF-fQe" kind="presentation" identifier="sideMenuSegue" id="geL-a2-nOp"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="41C-nD-6hE" userLabel="First Responder" sceneMemberID="firstResponder"/>

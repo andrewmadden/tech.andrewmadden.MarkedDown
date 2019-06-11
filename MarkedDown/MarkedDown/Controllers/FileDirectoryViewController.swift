@@ -13,7 +13,7 @@ enum ErrorMessage: String {
     case exists = "File already exists"
 }
 
-class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIDocumentPickerDelegate {
   
     let fm = FileManager.default
     var files: [String] = []
@@ -38,7 +38,10 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidAppear(_ animated: Bool) {
         // add 'add file' icon in nav bar
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(newFile))
+        let addFileButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(newFile))
+        let browseFilesButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.search, target: self, action: #selector(browse))
+        
+        self.navigationItem.rightBarButtonItems = [browseFilesButton, addFileButton]
         
         // refresh list
         getFilesFromDocumentsDirectory()
@@ -49,6 +52,30 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         errorLabel.textColor = .red
         errorLabel.isHidden = true
         errorLabel.font = errorLabel.font.withSize(12)
+    }
+    
+    @objc func browse() {
+        let documentPicker: UIDocumentPickerViewController = UIDocumentPickerViewController(documentTypes: ["public.text", "net.daringfireball.markdown"], in: UIDocumentPickerMode.import)
+        documentPicker.delegate = self
+        documentPicker.modalPresentationStyle = UIModalPresentationStyle.pageSheet
+        documentPicker.allowsMultipleSelection = false
+        self.present(documentPicker, animated: true)
+    }
+    
+    // a user selects a document
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        if let selectedURL = urls.first {
+            // import file into app
+            let fileName = selectedURL.lastPathComponent
+            let destURL = getDocumentsDirectory().appendingPathComponent(fileName)
+            do { try FileManager.default.copyItem(at: selectedURL, to: destURL) } catch {
+                presentError(message: "Unable to get external file")
+                return
+            }
+            self.fileEditing = MarkdownFile(fileName: fileName)
+            performSegue(withIdentifier: "openFileSegue", sender: nil)
+        }
+        print("completed picker")
     }
     
     @objc func newFile() {
@@ -192,6 +219,12 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         } catch {
             return false
         }
+    }
+    
+    func presentError(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true)
     }
  
 }
