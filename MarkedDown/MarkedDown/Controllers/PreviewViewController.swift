@@ -28,7 +28,8 @@ class PreviewViewController: UIViewController {
         
     }
     
-    private func loadHTML(from contents: String?) {
+    // load contents initially from model
+    func loadHTML(from contents: String?) {
         if let contents = contents {
             downView = try? DownView(frame: self.view.bounds, markdownString: contents, templateBundle: Bundle.main) {
                 self.view.addSubview(self.downView!)
@@ -38,7 +39,7 @@ class PreviewViewController: UIViewController {
     
     // update web view with new content from file
     func setEditorObserver() {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name("EditorContentsUpdated"), object: nil, queue: nil) { (notification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name("EditorDidEndEditing"), object: nil, queue: nil) { (notification) in
             self.loadHTML(from: self.fileEditing?.contents)
         }
     }

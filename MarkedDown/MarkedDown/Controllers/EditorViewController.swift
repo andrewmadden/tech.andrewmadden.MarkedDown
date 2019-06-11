@@ -15,12 +15,6 @@ enum CursorPosition {
     case end
 }
 
-enum MarkedDownFileType {
-    case pdf
-    case md
-    case html
-}
-
 class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // main text view
     @IBOutlet weak var editorTextView: UITextView!
@@ -55,6 +49,29 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         
     }
     
+    // attaches syntax buttons to a toolbar and attaches it to the keyboard
+    private func setupToolbar() {
+        let toolbar = UIToolbar()
+        
+        // setup buttons
+        let H1 = UIBarButtonItem(title: "H1", style: .plain, target: self, action: #selector(inputH1))
+        let H2 = UIBarButtonItem(title: "H2", style: .plain, target: self, action: #selector(inputH2))
+        let bold = UIBarButtonItem(image: #imageLiteral(resourceName: "BoldImage"), style: .plain, target: self, action: #selector(inputBold))
+        let italic = UIBarButtonItem(image: #imageLiteral(resourceName: "ItalicImage"), style: .plain, target: self, action: #selector(inputItalic))
+        let code = UIBarButtonItem(image: #imageLiteral(resourceName: "CodeImage"), style: .plain, target: self, action: #selector(inputCodeBlock))
+        let quote = UIBarButtonItem(image: #imageLiteral(resourceName: "QuoteImage"), style: .plain, target: self, action: #selector(inputBlockQuote))
+        let separator = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLineSeparator))
+        let link = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLink))
+        let image = UIBarButtonItem(image: #imageLiteral(resourceName: "PictureImage"), style: .plain, target: self, action: #selector(importImage))
+        
+        // add buttons to toolbar
+        toolbar.items = [H1, H2, bold, italic, code, quote, separator, link, image]
+        toolbar.sizeToFit()
+        
+        // add the toolbar to the keyboard
+        editorTextView.inputAccessoryView = toolbar
+    }
+    
     private func setupSideMenu() {
         
         // add undo and redo buttons to toolbar
@@ -63,6 +80,8 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         let exportButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ExportImage"), style: .plain, target: self, action: #selector(exportAlert))
         self.tabBarController?.navigationItem.rightBarButtonItems = [exportButton, redoButton, undoButton]
     }
+    
+    /* Export files */
     
     @objc func exportAlert() {
         let alert = UIAlertController(title: "Export File", message: "Choose a format", preferredStyle: .actionSheet)
@@ -91,11 +110,13 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         }
         switch (fileType) {
         case .md: data = FileGenerator.generateMarkdownData(markdownString: contents)
-        break
+            break
         case .html: data = FileGenerator.generateHTMLData(markdownString: contents)
-        break
+            break
         case .pdf: data = FileGenerator.generatePDFData(markdownString: contents)
-        break
+            break
+        default: data = nil
+            break
         }
         guard let fileData = data else {
             presentError(message: "Could not share file")
@@ -108,33 +129,8 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         self.present(activity, animated: true, completion: nil)
     }
     
-    private func setupToolbar() {
-        let toolbar = UIToolbar()
-        
-        // setup buttons
-//        let undoButton = UIBarButtonItem(title: "undo", style: .plain, target: self, action: #selector(undo))
-//        let redoButton  = UIBarButtonItem(title: "redo", style: .plain, target: self, action: #selector(redo))
-        let H1 = UIBarButtonItem(title: "H1", style: .plain, target: self, action: #selector(inputH1))
-        let H2 = UIBarButtonItem(title: "H2", style: .plain, target: self, action: #selector(inputH2))
-        let bold = UIBarButtonItem(image: #imageLiteral(resourceName: "BoldImage"), style: .plain, target: self, action: #selector(inputBold))
-        let italic = UIBarButtonItem(image: #imageLiteral(resourceName: "ItalicImage"), style: .plain, target: self, action: #selector(inputItalic))
-        let code = UIBarButtonItem(image: #imageLiteral(resourceName: "CodeImage"), style: .plain, target: self, action: #selector(inputCodeBlock))
-        let quote = UIBarButtonItem(image: #imageLiteral(resourceName: "QuoteImage"), style: .plain, target: self, action: #selector(inputBlockQuote))
-        let separator = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLineSeparator))
-        let link = UIBarButtonItem(image: #imageLiteral(resourceName: "SeparatorImage"), style: .plain, target: self, action: #selector(inputLink))
-        let image = UIBarButtonItem(image: #imageLiteral(resourceName: "PictureImage"), style: .plain, target: self, action: #selector(importImage))
-        
-        // add buttons to toolbar
-        toolbar.items = [H1, H2, bold, italic, code, quote, separator, link, image]
-        toolbar.sizeToFit()
-        
-        // add the toolbar to the keyboard
-        editorTextView.inputAccessoryView = toolbar
-    }
-    
-    
-    
-    // toolbar button functions
+
+    /* toolbar button functions */
     
     @objc private func undo() {
         if ( editorTextView.undoManager?.canUndo == true ) { editorTextView.undoManager?.undo() }
@@ -180,6 +176,7 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         insertSyntax("![\(fileName)](\(path.relativeString))", setCursorTo: .end)
     }
     
+    // create picker to select a file external to app
     @objc func importImage() {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
@@ -187,12 +184,30 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         present(picker, animated: true)
     }
     
+    // handle selected image from external source
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        //        guard let image = info[.editedImage] as? UIImage else { return }
+        if let sourcePath = info[.imageURL] as? URL  {
+            // copy image to bundle and get link
+            let fileName = sourcePath.lastPathComponent
+            let bundlePath = Bundle.main.bundleURL
+            var destPath = bundlePath.appendingPathComponent("resources")
+            destPath = destPath.appendingPathComponent(fileName, isDirectory: false)
+            // TODO handle error that file cannot be added to bundle
+            try? FileManager.default.copyItem(at: sourcePath, to: destPath)
+            
+            inputImage(location: destPath, fileName: fileName)
+            
+        }
+        dismiss(animated: true)
+    }
+    
+    // inject a string representing markdown at the cursor, and move the cursor appropriately
     private func insertSyntax(_ syntax: String, setCursorTo cursorPosition: CursorPosition) {
         // get cursor position
         let selectedRange: NSRange = editorTextView.selectedRange
         guard let selectedTextRange: UITextRange = editorTextView.selectedTextRange else { return }
         // add syntax
-//        editorTextView.textStorage.replaceCharacters(in: selectedRange, with: syntax)
         editorTextView.replace(selectedTextRange, withText: syntax)
         updateHightlighting(text: editorTextView.textStorage.string)
         
@@ -211,38 +226,23 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         }
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//        guard let image = info[.editedImage] as? UIImage else { return }
-        if let sourcePath = info[.imageURL] as? URL  {
-            // copy image to bundle and get link
-            let fileName = sourcePath.lastPathComponent
-            let bundlePath = Bundle.main.bundleURL
-            var destPath = bundlePath.appendingPathComponent("resources")
-            destPath = destPath.appendingPathComponent(fileName, isDirectory: false)
-            // TODO handle error that file cannot be added to bundle
-            try? FileManager.default.copyItem(at: sourcePath, to: destPath)
-            
-            inputImage(location: destPath, fileName: fileName)
-            
-        }
-        dismiss(animated: true)
-    }
-    
+    // replaces raw content with highlighted content
     func updateHightlighting(text: String) {
         if let highlightedCode = highlightr.highlight(text, as: "markdown") {
             editorTextView.textStorage.setAttributedString(highlightedCode)
         }
     }
     
+    // update highlighting and model
     func textViewDidChange(_ textView: UITextView) {
         if let text: String =  textView.layoutManager.textStorage?.string {
             updateHightlighting(text: text)
             // update file model
             fileEditing?.contents = text
-            NotificationCenter.default.post(Notification(name: Notification.Name("EditorContentsUpdated"), object: nil))
         }
     }
     
+    // update model and notify listeners editing has finished
     func textViewDidEndEditing(_ textView: UITextView) {
         if let text: String =  textView.layoutManager.textStorage?.string {
             fileEditing?.contents = text
@@ -270,6 +270,7 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
         editorTextView.scrollRangeToVisible(selectedRange)
     }
     
+    // show alert to user user for error
     func presentError(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

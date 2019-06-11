@@ -18,7 +18,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     let fm = FileManager.default
     var files: [String] = []
     var fileEditing: MarkdownFile?
-    let validFileTypes = ["md", "markdown", "txt"]
+    let validFileTypes = [MarkedDownFileType.md, MarkedDownFileType.markdown, MarkedDownFileType.txt]
     
     // new file alert
     var alert: UIAlertController?
@@ -162,8 +162,10 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         if let latestFiles: [String] = try? fm.contentsOfDirectory(atPath: getDocumentsDirectory().relativePath) {
             // filter and show only valid files
             self.files = latestFiles.filter { (fileName) in
-                let fileType = fileName.fileExtension()
-                return validFileTypes.contains(fileType)
+                if let fileType = MarkedDownFileType(rawValue: fileName.fileExtension()) {
+                    return validFileTypes.contains(fileType)
+                }
+                return false
             }
         }
         // refresh table view

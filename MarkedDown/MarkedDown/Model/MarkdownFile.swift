@@ -7,9 +7,14 @@
 //
 
 import Foundation
-//import Down
 
-
+enum MarkedDownFileType: String {
+    case pdf = "pdf"
+    case md = "md"
+    case markdown = "markdown"
+    case txt = "txt"
+    case html = "html"
+}
 
 class MarkdownFile {
     var fileName: String
