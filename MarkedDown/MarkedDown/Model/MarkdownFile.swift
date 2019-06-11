@@ -9,16 +9,7 @@
 import Foundation
 //import Down
 
-extension String {
-    
-    func fileKey() -> String {
-        return NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent ?? ""
-    }
-    
-    func fileExtension() -> String {
-        return NSURL(fileURLWithPath: self).pathExtension ?? ""
-    }
-}
+
 
 class MarkdownFile {
     var fileName: String
@@ -43,10 +34,12 @@ class MarkdownFile {
         }
     }
     
+    // file name without extension
     var fileKey: String {
         return self.fileName.fileKey()
     }
     
+    // get contents from file
     private func getContentsFromFile() {
         do {
             self.contents = try String(contentsOfFile: self.filePath.relativePath)
@@ -56,4 +49,20 @@ class MarkdownFile {
         }
     }
     
+    // delete file
+    func deleteFile() -> Bool {
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
+        do {
+            try fm.removeItem(at: path)
+            contents = nil
+            return true
+        } catch {
+            return false
+        }
+    }
+    
+    // checks if file exists
+    func exists() -> Bool {
+        return FileManager.default.fileExists(atPath: self.filePath.relativeString)
+    }
 }

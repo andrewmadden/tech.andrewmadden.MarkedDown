@@ -8,15 +8,26 @@
 
 import UIKit
 
+// allows file key and extension to be extracted from a filename string
+extension String {
+    
+    func fileKey() -> String {
+        return NSURL(fileURLWithPath: self).deletingPathExtension?.lastPathComponent ?? ""
+    }
+    
+    func fileExtension() -> String {
+        return NSURL(fileURLWithPath: self).pathExtension ?? ""
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
+
         return true
     }
 

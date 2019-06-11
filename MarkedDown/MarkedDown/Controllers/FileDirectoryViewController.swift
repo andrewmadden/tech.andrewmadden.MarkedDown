@@ -18,6 +18,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     let fm = FileManager.default
     var files: [String] = []
     var fileEditing: MarkdownFile?
+    let validFileTypes = ["md", "markdown", "txt"]
     
     // new file alert
     var alert: UIAlertController?
@@ -34,26 +35,22 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         
         // setup error label for create file alert popup
         setupErrorLabel()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
+        
         // add 'add file' icon in nav bar
         let addFileButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(newFile))
         let browseFilesButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.search, target: self, action: #selector(browse))
         
         self.navigationItem.rightBarButtonItems = [browseFilesButton, addFileButton]
-        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         // refresh list
         getFilesFromDocumentsDirectory()
     }
     
-    private func setupErrorLabel() {
-        errorLabel.text = "Error"
-        errorLabel.textColor = .red
-        errorLabel.isHidden = true
-        errorLabel.font = errorLabel.font.withSize(12)
-    }
+    /* CRUD methods for files */
     
+    // open document picker to allow user to select external files
     @objc func browse() {
         let documentPicker: UIDocumentPickerViewController = UIDocumentPickerViewController(documentTypes: ["public.text", "net.daringfireball.markdown"], in: UIDocumentPickerMode.import)
         documentPicker.delegate = self
@@ -78,6 +75,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         print("completed picker")
     }
     
+    // prompt new file name modally
     @objc func newFile() {
         print("new file selected")
         // dialog to get new filename
@@ -97,8 +95,6 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
                 // create file and trigger segue to editor
                 self.createNewMarkDownFile(newFileName)
                 print(newFileName)
-            } else {
-                // throw error that file could not be created
             }
         }))
         
@@ -108,6 +104,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         self.present(alert!, animated: true, completion: nil)
     }
     
+    // validates the new file name
     @objc func newFileTextFieldDidChange(_ textField: UITextField) {
         // reset
         errorLabel.isHidden = true
@@ -133,28 +130,47 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         if (isFileCreated) {
             self.fileEditing = MarkdownFile(fileName: fileKey + ".md")
             performSegue(withIdentifier: "openFileSegue", sender: nil)
+        } else {
+            presentError(message: "File could not be created")
         }
     }
     
+    // delete file by swiping row
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            // alert to confirm delete file request
+            let alert = UIAlertController(title: "Delete File", message: "Are you sure you want to delete '" + files[indexPath.row] + "'?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
+                let fileToDelete = MarkdownFile(fileName: self.files[indexPath.row])
+                if ( fileToDelete.deleteFile() ) {
+                    self.files.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    // refresh local data
+                    tableView.reloadData()
+                } else {
+                    // tell user delete failed
+                    self.presentError(message: "Could not delete file")
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+        }
+    }
+    
+    // get all local files of correct type to display in list
     func getFilesFromDocumentsDirectory() {
         if let latestFiles: [String] = try? fm.contentsOfDirectory(atPath: getDocumentsDirectory().relativePath) {
-            self.files = latestFiles
-            // filter and show only .md files
-            // TODO extend for other markdown mime types
-            self.files = self.files.filter { (fileName) in
-                return fileName.suffix(3) == ".md"
+            // filter and show only valid files
+            self.files = latestFiles.filter { (fileName) in
+                let fileType = fileName.fileExtension()
+                return validFileTypes.contains(fileType)
             }
         }
-        
         // refresh table view
         filesTableView.reloadData()
     }
     
-    func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let documentsDirectory = paths[0]
-        return documentsDirectory
-    }
+    /* Setup Table View */
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return files.count
@@ -175,29 +191,9 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         performSegue(withIdentifier: "openFileSegue", sender: nil)
     }
     
-    // delete file by swiping row
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // alert to confirm delete file request
-            let alert = UIAlertController(title: "Delete File", message: "Are you sure you want to delete '" + files[indexPath.row] + "'?", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (_) in
-                if self.deleteFile(self.files[indexPath.row]) {
-                    self.files.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .fade)
-                    // refresh local data
-                    tableView.reloadData()
-                } else {
-                    // tell user delete failed
-                    let alert = UIAlertController(title: "Error", message: "Could not delete file", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(alert, animated: true)
-                }
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            self.present(alert, animated: true)
-        }
-    }
+    /* Setup segue to editor */
     
+    // pass the file model to tab views
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let tabViewController = segue.destination as? UITabBarController {
             // set the file model in the editor and preview views
@@ -211,20 +207,25 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
         }
     }
     
-    func deleteFile(_ fileName: String) -> Bool {
-        let path = getDocumentsDirectory().appendingPathComponent(fileName)
-        do {
-            try fm.removeItem(at: path)
-            return true
-        } catch {
-            return false
-        }
-    }
+    /* Display errors for user */
     
+    // presents an alert with an error message
     func presentError(message: String) {
         let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true)
+    }
+    
+    // for displaying error in new file name alert
+    private func setupErrorLabel() {
+        errorLabel.text = "Error"
+        errorLabel.textColor = .red
+        errorLabel.isHidden = true
+        errorLabel.font = errorLabel.font.withSize(12)
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
  
 }
