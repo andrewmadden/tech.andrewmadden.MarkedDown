@@ -14,6 +14,7 @@ enum MarkedDownFileType: String {
     case markdown = "markdown"
     case txt = "txt"
     case html = "html"
+    case none = ""
 }
 
 class MarkdownFile {

@@ -18,7 +18,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     let fm = FileManager.default
     var files: [String] = []
     var fileEditing: MarkdownFile?
-    let validFileTypes = [MarkedDownFileType.md, MarkedDownFileType.markdown, MarkedDownFileType.txt]
+    let validFileTypes = [MarkedDownFileType.md, MarkedDownFileType.markdown, MarkedDownFileType.txt, MarkedDownFileType.none]
     
     // new file alert
     var alert: UIAlertController?
