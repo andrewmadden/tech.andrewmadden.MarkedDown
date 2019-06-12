@@ -52,7 +52,10 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     
     // open document picker to allow user to select external files
     @objc func browse() {
-        let documentPicker: UIDocumentPickerViewController = UIDocumentPickerViewController(documentTypes: ["public.text", "net.daringfireball.markdown"], in: UIDocumentPickerMode.import)
+//        let docTypes = ["public.text", "public.plain-text", "net.daringfireball.markdown", "public.item"]
+        // public.item allows all doc types - would be better to only use markdown UTI but haven't managed to figure it out
+        let docTypes = ["public.item"]
+        let documentPicker: UIDocumentPickerViewController = UIDocumentPickerViewController(documentTypes: docTypes, in: UIDocumentPickerMode.import)
         documentPicker.delegate = self
         documentPicker.modalPresentationStyle = UIModalPresentationStyle.pageSheet
         documentPicker.allowsMultipleSelection = false
@@ -70,7 +73,12 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
                 return
             }
             self.fileEditing = MarkdownFile(fileName: fileName)
-            performSegue(withIdentifier: "openFileSegue", sender: nil)
+            // if failed to open content of file don't open editor
+            if let _ = self.fileEditing!.contents {
+                performSegue(withIdentifier: "openFileSegue", sender: nil)
+            } else {
+                presentError(message: "Could not load data from \(fileName)")
+            }
         }
         print("completed picker")
     }

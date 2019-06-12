@@ -54,12 +54,12 @@ class FileGenerator {
         guard let html = try? down.toHTML() else { return nil }
         let webpageHtml = Webpage().boilerplate(html)
         
-        // create data for pdf file
+        // create data for html file
         return Data(webpageHtml.utf8)
     }
     
     static func generateMarkdownData(markdownString contents: String) -> Data? {
-        // create data for pdf file
+        // create data for markdown file
         let data = Data(contents.utf8)
         return data
     }
