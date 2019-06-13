@@ -134,7 +134,7 @@ class FileDirectoryViewController: UIViewController, UITableViewDelegate, UITabl
     // create new file in Documents directory and open editor if successful
     func createNewMarkDownFile(_ fileKey: String) {
         let filePath = getDocumentsDirectory().appendingPathComponent(fileKey).appendingPathExtension("md")
-        let isFileCreated = fm.createFile(atPath: filePath.relativePath, contents: Data(base64Encoded: ""), attributes: nil) // TODO what about errors?
+        let isFileCreated = fm.createFile(atPath: filePath.relativePath, contents: Data(base64Encoded: ""), attributes: nil)
         if (isFileCreated) {
             self.fileEditing = MarkdownFile(fileName: fileKey + ".md")
             performSegue(withIdentifier: "openFileSegue", sender: nil)

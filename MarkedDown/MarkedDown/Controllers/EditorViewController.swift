@@ -16,6 +16,7 @@ enum CursorPosition {
 }
 
 class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
     // main text view
     @IBOutlet weak var editorTextView: UITextView!
 
@@ -103,27 +104,26 @@ class EditorViewController: UIViewController, UITextViewDelegate, UIImagePickerC
             presentError(message: "Could not share file")
             return
         }
-        let data: Data?
         guard let contents = file.contents else {
             presentError(message: "Could not share file")
             return
         }
-        switch (fileType) {
-        case .md: data = FileGenerator.generateMarkdownData(markdownString: contents)
-            break
-        case .html: data = FileGenerator.generateHTMLData(markdownString: contents)
-            break
-        case .pdf: data = FileGenerator.generatePDFData(markdownString: contents)
-            break
-        default: data = nil
-            break
-        }
-        guard let fileData = data else {
-            presentError(message: "Could not share file")
+        
+        // save file to temp directory for sharing
+        guard let url = FileGenerator.generateTempFile(fileKey: file.fileKey, markdownString: contents, fileType: fileType) else {
+            presentError(message: "Could not create file")
             return
         }
+        
+        // get data for sharing
+        guard let data = FileGenerator.generateTempData(fileKey: file.fileKey, markdownString: contents, fileType: fileType) else {
+            presentError(message: "Could not create file")
+            return
+        }
+ 
+        // share url
         let activity = UIActivityViewController(
-            activityItems: [fileData],
+            activityItems: [url],
             applicationActivities: nil
         )
         self.present(activity, animated: true, completion: nil)

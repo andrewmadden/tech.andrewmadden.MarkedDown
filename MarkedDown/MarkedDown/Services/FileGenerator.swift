@@ -64,27 +64,39 @@ class FileGenerator {
         return data
     }
     
-    static func generatePDFFile(fileKey: String, markdownString contents: String, pageSize: PageSize = .A4) -> URL? {
-        guard let data = generatePDFData(markdownString: contents, pageSize: pageSize) else { return nil }
-        let tempFilePath = FileManager.default.temporaryDirectory.appendingPathComponent(fileKey).appendingPathExtension("pdf")
-        FileManager.default.createFile(atPath: tempFilePath.relativePath, contents: data, attributes: nil)
-        
+    static func generateTempFile(fileKey: String, markdownString contents: String, fileType: MarkedDownFileType) -> URL? {
+        let data: Data?
+        switch (fileType) {
+        case .md: data = FileGenerator.generateMarkdownData(markdownString: contents)
+            break
+        case .html: data = FileGenerator.generateHTMLData(markdownString: contents)
+            break
+        case .pdf: data = FileGenerator.generatePDFData(markdownString: contents)
+            break
+        default: data = nil
+            break
+        }
+        let tempFilePath = FileManager.default.temporaryDirectory.appendingPathComponent(fileKey).appendingPathExtension(fileType.rawValue)
+        do {
+            try data?.write(to: tempFilePath, options: .atomic)
+        } catch {
+            return nil
+        }
         return tempFilePath
     }
     
-    static func generateHTMLFile(fileKey: String, markdownString contents: String) -> URL? {
-        guard let data = generateHTMLData(markdownString: contents) else { return nil }
-        let tempFilePath = FileManager.default.temporaryDirectory.appendingPathComponent(fileKey).appendingPathExtension("html")
-        FileManager.default.createFile(atPath: tempFilePath.relativePath, contents: data, attributes: nil)
-        
-        return tempFilePath
-    }
-    
-    static func generateMarkdownFile(fileKey: String, markdownString contents: String) -> URL? {
-        guard let data = generateMarkdownData(markdownString: contents) else { return nil }
-        let tempFilePath = FileManager.default.temporaryDirectory.appendingPathComponent(fileKey).appendingPathExtension("txt")
-        FileManager.default.createFile(atPath: tempFilePath.relativePath, contents: data, attributes: nil)
-        
-        return tempFilePath
+    static func generateTempData(fileKey: String, markdownString contents: String, fileType: MarkedDownFileType) -> Data? {
+        let data: Data?
+        switch (fileType) {
+        case .md: data = FileGenerator.generateMarkdownData(markdownString: contents)
+            break
+        case .html: data = FileGenerator.generateHTMLData(markdownString: contents)
+            break
+        case .pdf: data = FileGenerator.generatePDFData(markdownString: contents)
+            break
+        default: data = nil
+            break
+        }
+        return data
     }
 }

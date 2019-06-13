@@ -91,6 +91,10 @@
 			<string>net.daringfireball.markdown</string>
 		</dict>
 	</array>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
